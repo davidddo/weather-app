@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Weather App</string>
+
     <string name="title_activity_main">MainActivity</string>
     <string name="card_title"> Title </string>
     <string name="card_content_description"> Description </string>
@@ -8,7 +9,7 @@
     <string name="card_button1_text"> First Button </string>
     <string name="card_button2_text"> Second Button </string>
 
-
+    <string name="home_title">Wetter</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
@@ -16,4 +17,20 @@
     <string name="hello_world">Hello Square World!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_main3">MainActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="home_label">Home</string>
+    <string name="favourites_label">Favourites</string>
+    <string name="search_label">Search</string>
+
 </resources>
