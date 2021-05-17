@@ -16,7 +16,6 @@ import de.hdm.weatherapp.utils.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import de.hdm.weatherapp.models.Weather;
 
 public class HomeFragment extends Fragment {
 
@@ -38,27 +37,10 @@ public class HomeFragment extends Fragment {
 
         WeathercardFragment weathercardFragment = new WeathercardFragment();
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.currentWeatherData, weathercardFragment).commit();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
-    }
-
-    private void getCurrentWeather(String city) {
-        final String apiKey = ApiClient.API_KEY;
-        Call<CurrentWeatherResponse> call = apiService.getCurrentWeather(city, "metric", "de", apiKey);
-        call.enqueue(new Callback<CurrentWeatherResponse>() {
-            @Override
-            public void onResponse(Call<CurrentWeatherResponse> call, Response<CurrentWeatherResponse> response) {
-                System.out.println(response);
-            }
-
-            @Override
-            public void onFailure(Call<CurrentWeatherResponse> call, Throwable t) {
-                Log.e("Oh noo.", t.getMessage());
-            }
-        });
     }
 }

@@ -27,7 +27,6 @@ public class WeathercardFragment extends Fragment {
     private String mParam2;
 
     public WeathercardFragment() {
-        // Required empty public constructor
     }
 
     /**
