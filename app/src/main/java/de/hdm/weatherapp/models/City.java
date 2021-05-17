@@ -1,6 +1,6 @@
 package de.hdm.weatherapp.models;
 
-import de.hdmstuttgart.weatherapp.Coord;
+import de.hdm.weatherapp.models.Coord;
 
 public class City {
 

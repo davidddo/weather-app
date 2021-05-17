@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">Weather App</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="card_title"> Title </string>
+    <string name="card_content_description"> Description </string>
+    <string name="secondary_text"> Secondary Text </string>
+    <string name="supporting_text"> Supporting Text </string>
+    <string name="card_button1_text"> First Button </string>
+    <string name="card_button2_text"> Second Button </string>
+
+
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
