@@ -16,6 +16,7 @@ import de.hdm.weatherapp.utils.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import de.hdm.weatherapp.models.Weather;
 
 public class HomeFragment extends Fragment {
 
@@ -34,6 +35,10 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         apiService = ApiClient.getClient().create(ApiService.class);
+
+        WeathercardFragment weathercardFragment = new WeathercardFragment();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.currentWeatherData, weathercardFragment).commit();
+
     }
 
     @Override
