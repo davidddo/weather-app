@@ -1,0 +1,49 @@
+package de.hdm.weatherapp.views;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.TextView;
+
+import com.google.android.material.card.MaterialCardView;
+
+import de.hdm.weatherapp.R;
+import de.hdm.weatherapp.models.common.WeatherItem;
+import de.hdm.weatherapp.models.currentweather.CurrentWeatherResponse;
+
+public class CurrentWeatherView extends MaterialCardView {
+
+    private final TextView titleView;
+    private final TextView subtitleView;
+
+    private final WeatherIconView weatherIconView;
+    private final TextView temperatureView;
+    private final WeatherDetailsView weatherDetailsView;
+
+    public CurrentWeatherView(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        inflate(context, R.layout.current_weather, this);
+
+        titleView = this.findViewById(R.id.title);
+        subtitleView = this.findViewById(R.id.subtitle);
+
+        weatherIconView = this.findViewById(R.id.weather_icon);
+        weatherDetailsView = this.findViewById(R.id.weather_details);
+        temperatureView = this.findViewById(R.id.temperature);
+    }
+
+    public void setWeather(CurrentWeatherResponse currentWeather) {
+        final String title = currentWeather.getName();
+
+        final WeatherItem weather = currentWeather.getWeather().get(0);
+
+        final String subtitle = weather.getDescription();
+        final String temperature = String.valueOf(currentWeather.getMain().getTemp());
+
+        this.titleView.setText(title);
+        this.subtitleView.setText(subtitle);
+        this.temperatureView.setText(temperature);
+
+        this.weatherIconView.setWeather(weather);
+        this.weatherDetailsView.setWeather(currentWeather);
+    }
+}
