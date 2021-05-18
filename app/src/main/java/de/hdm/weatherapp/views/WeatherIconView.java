@@ -5,8 +5,10 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-import de.hdm.weatherapp.R;
+import com.bumptech.glide.Glide;
+
 import de.hdm.weatherapp.models.common.WeatherItem;
+import de.hdm.weatherapp.utils.WeatherUtils;
 
 
 public class WeatherIconView extends AppCompatImageView {
@@ -16,6 +18,7 @@ public class WeatherIconView extends AppCompatImageView {
     }
 
     public void setWeather(WeatherItem weather) {
-        this.setBackgroundResource(R.drawable.icon_cloudy_sunny);
+        final int iconCode = WeatherUtils.getWeatherIcon(weather.getId());
+        Glide.with(this).load(iconCode).into(this);
     }
 }
