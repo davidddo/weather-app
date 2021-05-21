@@ -32,5 +32,8 @@
     <string name="home_label">Home</string>
     <string name="favourites_label">Favourites</string>
     <string name="search_label">Search</string>
+    <string name="title_location_permission">Test</string>
+    <string name="text_location_permission">TEst</string>
+    <string name="ok">Okay</string>
 
 </resources>
