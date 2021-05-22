@@ -8,7 +8,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.models.common.WeatherItem;
-import de.hdm.weatherapp.models.currentweather.CurrentWeatherResponse;
+import de.hdm.weatherapp.models.current.CurrentWeatherResponse;
 
 public class CurrentWeatherView extends MaterialCardView {
 
@@ -17,7 +17,6 @@ public class CurrentWeatherView extends MaterialCardView {
 
     private final WeatherIconView weatherIconView;
     private final TextView temperatureView;
-    private final WeatherDetailsView weatherDetailsView;
 
     public CurrentWeatherView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -27,7 +26,6 @@ public class CurrentWeatherView extends MaterialCardView {
         subtitleView = this.findViewById(R.id.subtitle);
 
         weatherIconView = this.findViewById(R.id.weather_icon);
-        weatherDetailsView = this.findViewById(R.id.weather_details);
         temperatureView = this.findViewById(R.id.temperature);
     }
 
@@ -36,14 +34,13 @@ public class CurrentWeatherView extends MaterialCardView {
 
         final WeatherItem weather = currentWeather.getWeather().get(0);
 
-        final String subtitle = weather.getDescription();
+        final String subtitle = weather.description;
         final String temperature = String.valueOf(currentWeather.getMain().getTemp());
 
         this.titleView.setText(title);
         this.subtitleView.setText(subtitle);
         this.temperatureView.setText(temperature);
 
-        this.weatherIconView.setWeather(weather);
-        this.weatherDetailsView.setWeather(currentWeather);
+        this.weatherIconView.setWeatherId(weather.id);
     }
 }

@@ -23,12 +23,18 @@ import android.view.ViewGroup;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 import de.hdm.weatherapp.R;
-import de.hdm.weatherapp.models.currentweather.CurrentWeatherResponse;
+import de.hdm.weatherapp.models.current.CurrentWeatherResponse;
+import de.hdm.weatherapp.models.forecast.ForecastResponse;
+import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
 import de.hdm.weatherapp.utils.ApiClient;
 import de.hdm.weatherapp.utils.ApiService;
 import de.hdm.weatherapp.views.CurrentWeatherView;
 
+import de.hdm.weatherapp.views.WeatherDetailsView;
+import de.hdm.weatherapp.views.WeekForecastView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,8 +43,13 @@ public class HomeFragment extends Fragment implements LocationListener {
     private final int REQUEST_LOCATION_PERMISSION = 1;
     private final String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
+    private final double[][] fallbackCities = {{48.783333, 9.183333}, {40.730610, -73.935242}, {51.509865, -0.118092}, {38.736946, -9.142685}};
+
     private Context context;
     private CurrentWeatherView currentWeatherView;
+    private WeatherDetailsView weatherDetailsView;
+    private WeekForecastView weekForecastView;
+
 
     private LocationManager locationManager;
     private ApiService apiService;
@@ -61,6 +72,8 @@ public class HomeFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         currentWeatherView = view.findViewById(R.id.current_weather_view);
+        weatherDetailsView = view.findViewById(R.id.weather_details);
+        weekForecastView = view.findViewById(R.id.week_forecast);
 
         return view;
     }
@@ -71,13 +84,12 @@ public class HomeFragment extends Fragment implements LocationListener {
         this.context = context;
     }
 
-
     @Override
     public void onLocationChanged(@NonNull Location location) {
         final double latitude = location.getLatitude();
         final double longitude = location.getLongitude();
 
-        loadCurrentWeather(latitude, longitude);
+        loadWeatherData(latitude, longitude);
     }
 
     @Override
@@ -90,6 +102,9 @@ public class HomeFragment extends Fragment implements LocationListener {
                     }
                 } else {
                     // Todo: Show Toast or snack bar.
+
+                    double[] location = getRandomCityLocation();
+                    loadWeatherData(location[0], location[1]);
                 }
                 return;
             }
@@ -107,11 +122,15 @@ public class HomeFragment extends Fragment implements LocationListener {
         return true;
     }
 
-
     @RequiresPermission(anyOf = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     private void requestLocationUpdates() {
         final String provider = locationManager.getBestProvider(new Criteria(), false);
-        locationManager.requestLocationUpdates(provider, 1000, 100F, this);
+        locationManager.requestLocationUpdates(provider, 500, 100F, this);
+    }
+
+    private void loadWeatherData(double latitude, double longitude) {
+        loadCurrentWeather(latitude, longitude);
+        loadWeekForecast(latitude, longitude);
     }
 
     private void loadCurrentWeather(double latitude, double longitude) {
@@ -119,7 +138,11 @@ public class HomeFragment extends Fragment implements LocationListener {
         call.enqueue(new Callback<CurrentWeatherResponse>() {
             @Override
             public void onResponse(Call<CurrentWeatherResponse> call, Response<CurrentWeatherResponse> response) {
-                currentWeatherView.setWeather(response.body());
+                CurrentWeatherResponse weatherResponse = response.body();
+                if (weatherResponse != null) {
+                    currentWeatherView.setWeather(weatherResponse);
+                    weatherDetailsView.setWeather(weatherResponse);
+                }
             }
 
             @Override
@@ -127,5 +150,27 @@ public class HomeFragment extends Fragment implements LocationListener {
                 Log.e("Oh noo.", t.getMessage());
             }
         });
+    }
+
+    private void loadWeekForecast(double latitude, double longitude) {
+        Call<WeekForecastResponse> call = apiService.getWeekForecast(latitude, longitude, "metric", "de", "current,minutely,hourly,alerts", ApiClient.API_KEY);
+        call.enqueue(new Callback<WeekForecastResponse>() {
+            @Override
+            public void onResponse(Call<WeekForecastResponse> call, Response<WeekForecastResponse> response) {
+                WeekForecastResponse forecastResponse = response.body();
+                if (forecastResponse != null) {
+                    weekForecastView.setWeekForecast(forecastResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeekForecastResponse> call, Throwable t) {
+                Log.e("Oh noo.", t.getMessage());
+            }
+        });
+    }
+
+    private double[] getRandomCityLocation() {
+        return fallbackCities[new Random().nextInt(fallbackCities.length)];
     }
 }

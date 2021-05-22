@@ -1,15 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:fillViewport="true"
     tools:context=".fragments.HomeFragment">
 
-    <de.hdm.weatherapp.views.CurrentWeatherView
-        android:id="@+id/current_weather_view"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="8dp" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <de.hdm.weatherapp.views.CurrentWeatherView
+                android:id="@+id/current_weather_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardElevation="0dp" />
+
+            <de.hdm.weatherapp.views.WeatherDetailsView
+                android:id="@+id/weather_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.slider.Slider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:valueFrom="0.0"
+                android:valueTo="100.0" />
+
+            <de.hdm.weatherapp.views.WeekForecastView
+                android:id="@+id/week_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

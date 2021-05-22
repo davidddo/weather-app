@@ -1,4 +1,4 @@
-package de.hdm.weatherapp.models.currentweather;
+package de.hdm.weatherapp.models.current;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -6,6 +6,9 @@ public class Main {
 
     @SerializedName("temp")
     private double temp;
+
+    @SerializedName("feels_like")
+    private double feelsLike;
 
     @SerializedName("temp_min")
     private double tempMin;
@@ -30,7 +33,15 @@ public class Main {
     }
 
     public void setTemp(double temp) {
-        this.temp = temp;
+        this.temp = feelsLike;
+    }
+
+    public double getFeelsLike() {
+        return feelsLike;
+    }
+
+    public void setFeelsLike(double temp) {
+        this.feelsLike = temp;
     }
 
     public double getTempMin() {

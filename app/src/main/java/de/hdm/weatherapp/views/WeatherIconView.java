@@ -17,8 +17,8 @@ public class WeatherIconView extends AppCompatImageView {
         super(context, attributeSet);
     }
 
-    public void setWeather(WeatherItem weather) {
-        final int iconCode = WeatherUtils.getWeatherIcon(weather.getId());
+    public void setWeatherId(int id) {
+        final int iconCode = WeatherUtils.getWeatherIcon(id);
         Glide.with(this).load(iconCode).into(this);
     }
 }

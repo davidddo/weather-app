@@ -1,4 +1,4 @@
-package de.hdm.weatherapp.models.currentweather;
+package de.hdm.weatherapp.models.current;
 
 import com.google.gson.annotations.SerializedName;
 
