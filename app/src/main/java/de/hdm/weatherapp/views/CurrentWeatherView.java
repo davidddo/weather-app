@@ -30,12 +30,12 @@ public class CurrentWeatherView extends MaterialCardView {
     }
 
     public void setWeather(CurrentWeatherResponse currentWeather) {
-        final String title = currentWeather.getName();
+        final String title = currentWeather.name;
 
-        final WeatherItem weather = currentWeather.getWeather().get(0);
+        final WeatherItem weather = currentWeather.weather.get(0);
 
         final String subtitle = weather.description;
-        final String temperature = String.valueOf(currentWeather.getMain().getTemp());
+        final String temperature = String.valueOf(currentWeather.main.temp);
 
         this.titleView.setText(title);
         this.subtitleView.setText(subtitle);

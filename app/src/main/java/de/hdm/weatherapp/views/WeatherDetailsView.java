@@ -27,8 +27,8 @@ public class WeatherDetailsView extends LinearLayout {
 
         System.out.println(resources.getString(R.string.feels_like));
 
-        final String feelsLike = resources.getString(R.string.feels_like, String.valueOf(currentWeather.getMain().getFeelsLike()));
-        final String windSpeed = resources.getString(R.string.wind_speed, String.valueOf(currentWeather.getMain().getFeelsLike()));
+        final String feelsLike = resources.getString(R.string.feels_like, String.valueOf(currentWeather.main.feelsLike));
+        final String windSpeed = resources.getString(R.string.wind_speed, String.valueOf(currentWeather.main.feelsLike));
 
         this.feelsLikeView.setText(feelsLike);
         this.windSpeedView.setText(windSpeed);

@@ -22,16 +22,14 @@ import de.hdm.weatherapp.models.forecast.week.DailyWeather;
 import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
 
 public class WeekForecastView extends RecyclerView {
-    private final Context context;
-    private final LinearLayoutManager layoutManager;
     private final WeekForecastViewAdapter adapter;
 
     public WeekForecastView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
-        this.context = context;
         adapter = new WeekForecastViewAdapter();
-        layoutManager = new LinearLayoutManager(context);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         setLayoutManager(layoutManager);

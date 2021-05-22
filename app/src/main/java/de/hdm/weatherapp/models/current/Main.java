@@ -5,90 +5,26 @@ import com.google.gson.annotations.SerializedName;
 public class Main {
 
     @SerializedName("temp")
-    private double temp;
+    public double temp;
 
     @SerializedName("feels_like")
-    private double feelsLike;
+    public double feelsLike;
 
     @SerializedName("temp_min")
-    private double tempMin;
+    public double tempMin;
 
     @SerializedName("grnd_level")
-    private double grndLevel;
+    public double grndLevel;
 
     @SerializedName("humidity")
-    private int humidity;
+    public int humidity;
 
     @SerializedName("pressure")
-    private double pressure;
+    public double pressure;
 
     @SerializedName("sea_level")
-    private double seaLevel;
+    public double seaLevel;
 
     @SerializedName("temp_max")
-    private double tempMax;
-
-    public double getTemp() {
-        return temp;
-    }
-
-    public void setTemp(double temp) {
-        this.temp = feelsLike;
-    }
-
-    public double getFeelsLike() {
-        return feelsLike;
-    }
-
-    public void setFeelsLike(double temp) {
-        this.feelsLike = temp;
-    }
-
-    public double getTempMin() {
-        return tempMin;
-    }
-
-    public void setTempMin(double tempMin) {
-        this.tempMin = tempMin;
-    }
-
-    public double getGrndLevel() {
-        return grndLevel;
-    }
-
-    public void setGrndLevel(double grndLevel) {
-        this.grndLevel = grndLevel;
-    }
-
-    public int getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(int humidity) {
-        this.humidity = humidity;
-    }
-
-    public double getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(double pressure) {
-        this.pressure = pressure;
-    }
-
-    public double getSeaLevel() {
-        return seaLevel;
-    }
-
-    public void setSeaLevel(double seaLevel) {
-        this.seaLevel = seaLevel;
-    }
-
-    public double getTempMax() {
-        return tempMax;
-    }
-
-    public void setTempMax(double tempMax) {
-        this.tempMax = tempMax;
-    }
+    public double tempMax;
 }
