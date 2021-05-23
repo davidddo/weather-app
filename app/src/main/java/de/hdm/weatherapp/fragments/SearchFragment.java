@@ -91,7 +91,7 @@ public class SearchFragment extends Fragment {
 
                 filteredCities.clear();
 
-                filteredCities.addAll(cities.stream().filter(city -> city.name.contains("Stuttgart")).collect(Collectors.toList()));
+                filteredCities.addAll(cities.stream().filter(city -> city.name.toLowerCase().contains(searchString.toLowerCase())).collect(Collectors.toList()));
 
                 Log.e("-SA-", filteredCities.toString());
 
