@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     private CurrentWeatherView currentWeatherView;
     private WeatherDetailsView weatherDetailsView;
     private WeekForecastView weekForecastView;
+    private TimePicker timePicker;
 
 
     private LocationManager locationManager;
@@ -74,6 +76,9 @@ public class HomeFragment extends Fragment implements LocationListener {
         currentWeatherView = view.findViewById(R.id.current_weather_view);
         weatherDetailsView = view.findViewById(R.id.weather_details);
         weekForecastView = view.findViewById(R.id.week_forecast);
+        timePicker = view.findViewById(R.id.time_picker);
+
+        timePicker.setIs24HourView(true);
 
         return view;
     }

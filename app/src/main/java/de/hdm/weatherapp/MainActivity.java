@@ -1,6 +1,7 @@
 package de.hdm.weatherapp;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container, favoritesFragment, "favourites").hide(favoritesFragment)
+                .add(R.id.fragment_container, searchFragment, "search").hide(searchFragment)
                 .add(R.id.fragment_container, homeFragment, "home")
                 .commit();
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.navigation_search:
+                    Log.e("-SA-","case triggered search");
                     fragmentManager.beginTransaction().hide(currentFragment).show(searchFragment).commit();
                     currentFragment = searchFragment;
                     return true;
