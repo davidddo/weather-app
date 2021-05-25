@@ -28,5 +28,6 @@
     <string name="feels_like">Gefühlte %1$s°</string>
     <string name="wind_speed">%1$s km/h Wind</string>
     <string name="humidity">%1$s Luftfeuchtigkeit</string>
+    <string name="search_title">Stadt suchen</string>
 
 </resources>

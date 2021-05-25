@@ -1,64 +1,63 @@
 package de.hdm.weatherapp;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import de.hdm.weatherapp.fragments.FavoritesFragment;
-import de.hdm.weatherapp.fragments.HomeFragment;
-import de.hdm.weatherapp.fragments.SearchFragment;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
+import de.hdm.weatherapp.database.AppDatabase;
+import de.hdm.weatherapp.database.CityDatabase;
+import de.hdm.weatherapp.database.entity.CityEntity;
+import de.hdm.weatherapp.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Fragment currentFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        HomeFragment homeFragment = new HomeFragment();
-        FavoritesFragment favoritesFragment = new FavoritesFragment();
-        SearchFragment searchFragment = new SearchFragment();
+        initNavigation();
+        initCities();
+    }
 
-        currentFragment = homeFragment;
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.fragment_container, favoritesFragment, "favourites").hide(favoritesFragment)
-                .add(R.id.fragment_container, searchFragment, "search").hide(searchFragment)
-                .add(R.id.fragment_container, homeFragment, "home")
-                .commit();
-
-
+    private void initNavigation() {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
-        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    fragmentManager.beginTransaction().hide(currentFragment).show(homeFragment).commit();
-                    currentFragment = homeFragment;
-                    return true;
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_favourites, R.id.navigation_search)
+                .build();
 
-                case R.id.navigation_favourites:
-                    fragmentManager.beginTransaction().hide(currentFragment).show(favoritesFragment).commit();
-                    currentFragment = favoritesFragment;
-                    return true;
+        NavHostFragment hostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_host);
+        NavController navController = hostFragment.getNavController();
 
-                case R.id.navigation_search:
-                    Log.e("-SA-","case triggered search");
-                    fragmentManager.beginTransaction().hide(currentFragment).show(searchFragment).commit();
-                    currentFragment = searchFragment;
-                    return true;
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(bottomNavigation, navController);
+    }
 
-                default:
-                    return false;
-            }
-        });
+    private void initCities() {
+        CityDatabase database = AppDatabase.instance(getApplicationContext()).getCityDatabase();
+        if (database.cityDao().getAll().isEmpty()) {
+            System.out.println("INIT");
+
+            Runnable runnable = () -> {
+                String json = Utils.getJsonFromAssets(getApplicationContext(),"cities.list.json");
+                Type type = new TypeToken<ArrayList<CityEntity>>(){}.getType();
+
+                List<CityEntity> cities = new Gson().fromJson(json, type);
+                database.cityDao().insertMany(cities);
+            };
+
+            new Thread(runnable).start();
+        }
     }
 }
