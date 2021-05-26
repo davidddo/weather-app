@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputType;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,6 +79,8 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         searchView.setOnQueryTextListener(this);
+        searchView.setSuggestionsAdapter(null);
+        searchView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -123,7 +125,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         public LiveData<PagingData<CityEntity>> getPagingSource(String query) {
 
             Pager<Integer, CityEntity> pager = new Pager<>(
-                    new PagingConfig(20),
+                    new PagingConfig(20, 2, false, 20, 24),
                     () -> cityDao.pagingSource(query));
 
             CoroutineScope coroutineScope = ViewModelKt.getViewModelScope(this);

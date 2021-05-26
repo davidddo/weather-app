@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 
@@ -33,8 +37,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class WeatherView extends MaterialCardView {
+public class WeatherView extends FrameLayout {
     private final ApiService apiService;
+
+    private final LinearLayout weatherContainer;
 
     private final TextView titleView;
     private final TextView subtitleView;
@@ -55,6 +61,9 @@ public class WeatherView extends MaterialCardView {
         inflate(context, R.layout.weather, this);
 
         apiService = ApiClient.getClient().create(ApiService.class);
+
+        weatherContainer = this.findViewById(R.id.weather_container);
+        weatherContainer.setVisibility(View.GONE);
 
         titleView = this.findViewById(R.id.title);
         subtitleView = this.findViewById(R.id.subtitle);
@@ -174,13 +183,13 @@ public class WeatherView extends MaterialCardView {
 
     private void setCurrentWeather(CurrentWeatherResponse response) {
         Resources resources = getResources();
+        final WeatherItem weather = response.weather.get(0);
 
         final String title = response.name;
-        final WeatherItem weather = response.weather.get(0);
         final String subtitle = weather.description;
         final String temperature = String.valueOf((int)response.main.temp)+"°C";
         final String feelsLike = resources.getString(R.string.feels_like, String.valueOf(response.main.feelsLike));
-        final String windSpeed = resources.getString(R.string.wind_speed, String.valueOf(response.main.feelsLike));
+        final String windSpeed = resources.getString(R.string.wind_speed, String.valueOf(response.wind.speed));
 
         this.titleView.setText(title);
         this.subtitleView.setText(subtitle);
@@ -188,6 +197,8 @@ public class WeatherView extends MaterialCardView {
         this.windSpeedView.setText(windSpeed);
         this.temperatureView.setText(temperature);
         this.weatherIconView.setWeatherId(weather.id);
+
+        weatherContainer.setVisibility(View.VISIBLE);
     }
 
     private void setWeekForecast(WeekForecastResponse response) {
