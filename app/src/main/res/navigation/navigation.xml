@@ -21,6 +21,22 @@
         android:id="@+id/navigation_search"
         android:name="de.hdm.weatherapp.fragments.SearchFragment"
         android:label="@string/search_label"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_search_result"
+            app:destination="@id/navigation_search_result" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_search_result"
+        android:name="de.hdm.weatherapp.fragments.SearchResultFragment"
+        tools:layout="@layout/fragment_search_result">
+        <argument
+            android:name="cityId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_navigation_search_result_to_navigation_search"
+            app:destination="@id/navigation_search" />
+    </fragment>
 
 </navigation>

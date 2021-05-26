@@ -17,7 +17,7 @@ public class CityEntity {
     @Embedded(prefix = "coord_")
     public Coord coord;
 
-    public CityEntity(int id, String name, String country, Coord coord){
+    public CityEntity(int id, String name, String country, Coord coord) {
         this.id = id;
         this.name = name;
         this.country = country;

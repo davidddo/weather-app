@@ -17,6 +17,9 @@ public interface CityDao {
     @Query("SELECT * FROM cities")
     List<CityEntity> getAll();
 
+    @Query("SELECT * FROM cities WHERE id = :id")
+    CityEntity getById(int id);
+
     @Query("SELECT * FROM cities WHERE name LIKE '%' || :query || '%'")
     PagingSource<Integer, CityEntity> pagingSource(String query);
 
