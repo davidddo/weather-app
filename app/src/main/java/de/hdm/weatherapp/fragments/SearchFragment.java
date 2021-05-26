@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,6 +77,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
         MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         searchView.setOnQueryTextListener(this);
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -118,12 +121,14 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         public LiveData<PagingData<CityEntity>> getPagingSource(String query) {
+
             Pager<Integer, CityEntity> pager = new Pager<>(
                     new PagingConfig(20),
                     () -> cityDao.pagingSource(query));
 
             CoroutineScope coroutineScope = ViewModelKt.getViewModelScope(this);
             return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), coroutineScope);
+
         }
 
         static class Factory implements ViewModelProvider.Factory {

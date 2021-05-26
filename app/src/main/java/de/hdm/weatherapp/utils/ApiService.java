@@ -1,6 +1,7 @@
 package de.hdm.weatherapp.utils;
 
 import de.hdm.weatherapp.models.current.CurrentWeatherResponse;
+import de.hdm.weatherapp.models.forecast.day.DayForecastResponse;
 import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -48,4 +49,16 @@ public interface ApiService {
             @Query("exclude") String exclude,
             @Query("appid") String appId
     );
+
+    @GET("onecall")
+    Call<DayForecastResponse> getDayForecast(
+            @Query("lat") double latitude,
+            @Query("lon") double longitude,
+            @Query("units") String units,
+            @Query("lang") String lang,
+            @Query("exclude") String exclude,
+            @Query("appid") String appId
+    );
+
+
 }

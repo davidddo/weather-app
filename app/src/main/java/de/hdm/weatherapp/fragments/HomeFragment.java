@@ -16,14 +16,22 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.slider.LabelFormatter;
+import com.google.android.material.slider.Slider;
+
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Random;
 
+import de.hdm.weatherapp.utils.Utils;
 import de.hdm.weatherapp.R;
 
 import de.hdm.weatherapp.views.WeatherView;
@@ -58,6 +66,10 @@ public class HomeFragment extends Fragment implements LocationListener {
 
         return view;
     }
+
+
+
+
 
     @Override
     public void onAttach(@NotNull Context context) {
