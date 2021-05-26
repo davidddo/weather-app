@@ -95,6 +95,7 @@ public class SearchFragment extends Fragment {
 
                 Log.e("-SA-", filteredCities.toString());
 
+                
 
                 adapter.notifyDataSetChanged();
 
