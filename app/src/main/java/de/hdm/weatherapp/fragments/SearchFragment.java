@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
@@ -26,8 +27,6 @@ import android.widget.SearchView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.adapters.SearchAdapter;
 import de.hdm.weatherapp.adapters.SearchLoadStateAdapter;
@@ -35,6 +34,7 @@ import de.hdm.weatherapp.database.AppDatabase;
 import de.hdm.weatherapp.database.CityDatabase;
 import de.hdm.weatherapp.database.dao.CityDao;
 import de.hdm.weatherapp.database.entity.CityEntity;
+import de.hdm.weatherapp.utils.Utils;
 import kotlinx.coroutines.CoroutineScope;
 
 public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
@@ -62,6 +62,8 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         recyclerView.setAdapter(searchAdapter.withLoadStateFooter(new SearchLoadStateAdapter(v -> {
             searchAdapter.retry();
         })));
+
+        queryCities("");
 
         return view;
     }

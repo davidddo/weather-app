@@ -5,9 +5,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import androidx.annotation.RequiresPermission;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import de.hdm.weatherapp.R;
 
 public class Utils {
 
@@ -26,5 +31,10 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static NavController getNavigationController(FragmentManager fragmentManager) {
+        NavHostFragment hostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.navigation_host);
+        return hostFragment.getNavController();
     }
 }

@@ -1,11 +1,13 @@
 package de.hdm.weatherapp.adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,20 +27,20 @@ public class SearchAdapter extends PagingDataAdapter<CityEntity, SearchAdapter.C
     @NotNull
     @Override
     public SearchAdapter.CityViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
         return new SearchAdapter.CityViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull SearchAdapter.CityViewHolder holder, int position) {
-        holder.view.setOnClickListener(v -> {
-
-        });
-
         CityEntity city = getItem(position);
         if (city != null) {
             holder.bind(city);
-
+            holder.view.setOnClickListener(view -> {
+                Bundle args = new Bundle();
+                args.putInt("cityId", city.id);
+                Navigation.findNavController(view).navigate(R.id.action_navigation_search_to_navigation_search_result, args);
+            });
         }
     }
 
