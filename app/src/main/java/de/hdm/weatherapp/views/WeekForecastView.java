@@ -1,6 +1,7 @@
 package de.hdm.weatherapp.views;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.models.forecast.week.DailyWeather;
@@ -41,7 +45,10 @@ public class WeekForecastView extends RecyclerView {
     }
 
     public void setWeekForecast(WeekForecastResponse forecast) {
-        adapter.setDaily(forecast.daily);
+        List<DailyWeather> dailyWeather = forecast.daily;
+        dailyWeather.remove(0);
+
+        adapter.setDaily(dailyWeather);
     }
 
     class WeekForecastViewAdapter extends RecyclerView.Adapter<WeatherForecastViewHolder> {
@@ -89,7 +96,7 @@ public class WeekForecastView extends RecyclerView {
         }
 
         public void setWeatherForecast(DailyWeather daily) {
-            String day = new SimpleDateFormat("E").format(new Date(daily.dateTime * 1000L));
+            String day = new SimpleDateFormat("EEEE", Locale.GERMANY).format(new Date(daily.dateTime * 1000L));
             String minTemp = String.format("%s°", (int) daily.temp.min);
             String maxTemp = String.format("%s°", (int) daily.temp.max);
 
