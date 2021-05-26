@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +47,7 @@ public class WeekForecastView extends RecyclerView {
     class WeekForecastViewAdapter extends RecyclerView.Adapter<WeatherForecastViewHolder> {
         private List<DailyWeather> daily = new ArrayList<>();
 
+        @NotNull
         @Override
         public WeatherForecastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.forecast_item, parent, false);
@@ -67,7 +70,7 @@ public class WeekForecastView extends RecyclerView {
         }
     }
 
-    class WeatherForecastViewHolder extends RecyclerView.ViewHolder {
+    static class WeatherForecastViewHolder extends RecyclerView.ViewHolder {
         public final View view;
 
         public final TextView dayView;
