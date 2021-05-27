@@ -26,13 +26,6 @@ import de.hdm.weatherapp.views.WeatherView;
 
 public class SearchResultFragment extends Fragment {
 
-
-    @Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

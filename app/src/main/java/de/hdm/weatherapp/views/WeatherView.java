@@ -39,6 +39,7 @@ import retrofit2.Response;
 
 public class WeatherView extends FrameLayout {
     private final ApiService apiService;
+    private final Resources resources;
 
     private final LinearLayout weatherContainer;
 
@@ -46,66 +47,42 @@ public class WeatherView extends FrameLayout {
     private final TextView subtitleView;
     private final TextView feelsLikeView;
     private final TextView windSpeedView;
-
-    private final WeatherIconView weatherIconView;
     private final TextView temperatureView;
 
-    private Slider timeSlider;
+    private final WeatherIconView weatherIconView;
+    private final WeekForecastView weekForecastView;
 
     private DayForecastResponse dayForecastResponse;
-
-    private final WeekForecastView weekForecastView;
 
     public WeatherView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         inflate(context, R.layout.weather, this);
 
         apiService = ApiClient.getClient().create(ApiService.class);
+        resources = getResources();
 
         weatherContainer = this.findViewById(R.id.weather_container);
-        weatherContainer.setVisibility(View.GONE);
 
         titleView = this.findViewById(R.id.title);
         subtitleView = this.findViewById(R.id.subtitle);
         feelsLikeView = this.findViewById(R.id.feels_like);
         windSpeedView = this.findViewById(R.id.wind_speed);
-
         weatherIconView = this.findViewById(R.id.weather_icon);
         temperatureView = this.findViewById(R.id.temperature);
-
         weekForecastView = this.findViewById(R.id.week_forecast);
-        timeSlider = this.findViewById(R.id.time_slider);
 
+        Slider timeSlider = this.findViewById(R.id.time_slider);
+        LabelFormatter labelFormatter = value -> {
+            final long dateTime = dayForecastResponse.hourly.get((int) value).dateTime;
+            String formattedTime = new SimpleDateFormat("HH:mm").format( new Date(dateTime * 1000L));
 
-        LabelFormatter formatter = new LabelFormatter() {
-            @NonNull
-            @NotNull
-            @Override
-            public String getFormattedValue(float value) {
-                long hourtime;
-
-                Log.e("-SA-",Float.toString(value));
-                hourtime = (long) dayForecastResponse.hourly.get((int) value).dateTime;
-                Log.e("-SA-",Long.toString(hourtime));
-
-
-                Format formatter = new SimpleDateFormat("HH:mm");
-
-
-                Date date = new Date(hourtime*1000);
-
-                return formatter.format(date);
-            }
+            return String.format("%s Uhr", formattedTime);
         };
 
-        timeSlider.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull @NotNull Slider slider, float value, boolean fromUser) {
-                changeCurrentWeather(dayForecastResponse.hourly.get((int)value));
-            }
+        timeSlider.setLabelFormatter(labelFormatter);
+        timeSlider.addOnChangeListener((slider, value, fromUser) -> {
+            updateWeatherView(dayForecastResponse.hourly.get((int) value));
         });
-
-        timeSlider.setLabelFormatter(formatter);
     }
 
     public void bindLocation(double latitude, double longitude) {
@@ -115,7 +92,7 @@ public class WeatherView extends FrameLayout {
     private void loadWeather(double latitude, double longitude) {
         loadCurrentWeather(latitude, longitude);
         loadWeekForecast(latitude, longitude);
-        loadHourlyForecast(latitude,longitude);
+        loadHourlyForecast(latitude, longitude);
     }
 
     private void loadCurrentWeather(double latitude, double longitude) {
@@ -124,8 +101,7 @@ public class WeatherView extends FrameLayout {
             @Override
             public void onResponse(@NotNull Call<CurrentWeatherResponse> call, @NotNull Response<CurrentWeatherResponse> response) {
                 CurrentWeatherResponse weatherResponse = response.body();
-                Log.e("-SA-",weatherResponse.toString());
-                if (weatherResponse != null) setCurrentWeather(weatherResponse);
+                if (weatherResponse != null) updateWeatherView(weatherResponse);
             }
 
             @Override
@@ -141,8 +117,7 @@ public class WeatherView extends FrameLayout {
             @Override
             public void onResponse(@NotNull Call<DayForecastResponse> call, @NotNull Response<DayForecastResponse> response) {
                 DayForecastResponse forecastResponse = response.body();
-                Log.e("-SA-",forecastResponse.toString());
-                if (forecastResponse != null)  setDayForecast(forecastResponse);
+                if (forecastResponse != null) dayForecastResponse = forecastResponse;
             }
 
             @Override
@@ -158,7 +133,7 @@ public class WeatherView extends FrameLayout {
             @Override
             public void onResponse(@NotNull Call<WeekForecastResponse> call, @NotNull Response<WeekForecastResponse> response) {
                 WeekForecastResponse forecastResponse = response.body();
-                if (forecastResponse != null) setWeekForecast (forecastResponse);
+                if (forecastResponse != null) setWeekForecast(forecastResponse);
             }
 
             @Override
@@ -168,50 +143,47 @@ public class WeatherView extends FrameLayout {
         });
     }
 
-    private void changeCurrentWeather(HourlyWeather response) {
-        Resources resources = getResources();
-
-
+    private void updateWeatherView(CurrentWeatherResponse response) {
         final WeatherItem weather = response.weather.get(0);
-        final String subtitle = weather.description;
-        final String temperature = String.valueOf((int)response.temp)+"°C";
-        final String feelsLike = Double.toString(response.feelsLike);
-        final String windSpeed = Double.toString(response.windSpeed);
 
-        this.subtitleView.setText(subtitle);
-        this.feelsLikeView.setText(feelsLike);
-        this.windSpeedView.setText(windSpeed);
-        this.temperatureView.setText(temperature);
-        this.weatherIconView.setWeatherId(weather.id);
+        updateTitle(response.name);
+        updteSubtitle(weather.description);
+        updateTemperature(response.main.temp);
+        updateWeatherDetails(response.main.feelsLike, response.wind.speed);
+        updateWeatherIcon(weather.id);
     }
 
-    private void setCurrentWeather(CurrentWeatherResponse response) {
-        Resources resources = getResources();
-        final WeatherItem weather = response.weather.get(0);
+    private void updateWeatherView(HourlyWeather response) {
+        WeatherItem weather = response.weather.get(0);
 
-        final String title = response.name;
-        final String subtitle = weather.description;
-        final String temperature = String.valueOf((int)response.main.temp)+"°C";
-        final String feelsLike = resources.getString(R.string.feels_like, String.valueOf(response.main.feelsLike));
-        final String windSpeed = resources.getString(R.string.wind_speed, String.valueOf(response.wind.speed));
+        updteSubtitle(weather.description);
+        updateWeatherIcon(weather.id);
+        updateTemperature(response.temp);
+        updateWeatherDetails(response.feelsLike, response.windSpeed);
+    }
 
+    private void updateTitle(String title) {
         this.titleView.setText(title);
-        this.subtitleView.setText(subtitle);
-        this.feelsLikeView.setText(feelsLike);
-        this.windSpeedView.setText(windSpeed);
-        this.temperatureView.setText(temperature);
-        this.weatherIconView.setWeatherId(weather.id);
+    }
 
-        weatherContainer.setVisibility(View.VISIBLE);
+    private void updteSubtitle(String subtitle) {
+        this.subtitleView.setText(subtitle);
+    }
+
+    private void updateWeatherIcon(int weatherId) {
+        this.weatherIconView.setWeatherId(weatherId);
+    }
+
+    private void updateTemperature(double temperature) {
+        this.temperatureView.setText(resources.getString(R.string.temperature, String.valueOf(temperature)));
+    }
+
+    private void updateWeatherDetails(double feelsLike, double windSpeed) {
+        this.feelsLikeView.setText(resources.getString(R.string.feels_like, String.valueOf(feelsLike)));
+        this.windSpeedView.setText(resources.getString(R.string.wind_speed, String.valueOf(windSpeed)));
     }
 
     private void setWeekForecast(WeekForecastResponse response) {
         weekForecastView.setWeekForecast(response);
     }
-
-    private void setDayForecast(DayForecastResponse response) {
-        this.dayForecastResponse = response;
-    }
-
-
 }
