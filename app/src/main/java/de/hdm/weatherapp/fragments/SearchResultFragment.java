@@ -12,6 +12,7 @@ import android.widget.SearchView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -24,6 +25,13 @@ import de.hdm.weatherapp.database.entity.CityEntity;
 import de.hdm.weatherapp.views.WeatherView;
 
 public class SearchResultFragment extends Fragment {
+
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
