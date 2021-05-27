@@ -57,6 +57,10 @@ public class WeatherView extends FrameLayout {
     }
 
     public void bindLocation(double latitude, double longitude) {
+        loadWeather(latitude, longitude);
+    }
+
+    private void loadWeather(double latitude, double longitude) {
         loadCurrentWeather(latitude, longitude);
         loadWeekForecast(latitude, longitude);
     }
