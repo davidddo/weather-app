@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements LocationListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
         boolean hasPermission = checkLocationPermissions();
         if (hasPermission) {
             requestLocationUpdates();
@@ -66,10 +66,6 @@ public class HomeFragment extends Fragment implements LocationListener {
 
         return view;
     }
-
-
-
-
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -93,8 +89,6 @@ public class HomeFragment extends Fragment implements LocationListener {
                     requestLocationUpdates();
                 }
             } else {
-                // Todo: Show Toast or snack bar.
-
                 double[] location = getRandomCityLocation();
                 weatherView.bindLocation(location[0], location[1]);
             }

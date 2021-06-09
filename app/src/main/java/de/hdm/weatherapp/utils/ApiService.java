@@ -6,6 +6,7 @@ import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.QueryName;
 
 public interface ApiService {
 
@@ -14,18 +15,13 @@ public interface ApiService {
      *
      * @param latitude  Geographical coordinates (latitude)
      * @param longitude Geographical coordinates (latitude)
-     * @param units     String units of response
-     * @param lang      String language of response
      * @param appId     String api key
-     *
      * @return instance of {@link CurrentWeatherResponse}
      */
-    @GET("weather")
+    @GET("weather?units=metric&lang=de")
     Call<CurrentWeatherResponse> getCurrentWeather(
             @Query("lat") double latitude,
             @Query("lon") double longitude,
-            @Query("units") String units,
-            @Query("lang") String lang,
             @Query("appid") String appId
     );
 
@@ -34,31 +30,20 @@ public interface ApiService {
      *
      * @param latitude  Geographical coordinates (latitude)
      * @param longitude Geographical coordinates (latitude)
-     * @param units     String units of response
-     * @param lang      String language of response
      * @param appId     String api key
-     *
      * @return instance of {@link WeekForecastResponse}
      */
-    @GET("onecall")
+    @GET("onecall?exlude=current,minutely,hourly,alerts&units=metric&lang=de")
     Call<WeekForecastResponse> getWeekForecast(
             @Query("lat") double latitude,
             @Query("lon") double longitude,
-            @Query("units") String units,
-            @Query("lang") String lang,
-            @Query("exclude") String exclude,
             @Query("appid") String appId
     );
 
-    @GET("onecall")
+    @GET("onecall?exlude=current,daily,minutely,alerts&units=metric&lang=de")
     Call<DayForecastResponse> getDayForecast(
             @Query("lat") double latitude,
             @Query("lon") double longitude,
-            @Query("units") String units,
-            @Query("lang") String lang,
-            @Query("exclude") String exclude,
             @Query("appid") String appId
     );
-
-
 }

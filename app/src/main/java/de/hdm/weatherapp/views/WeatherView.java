@@ -1,7 +1,10 @@
 package de.hdm.weatherapp.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -9,20 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-import androidx.annotation.NonNull;
-
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.slider.LabelFormatter;
-import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.slider.Slider;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.models.common.WeatherItem;
@@ -31,62 +22,69 @@ import de.hdm.weatherapp.models.forecast.day.DayForecastResponse;
 import de.hdm.weatherapp.models.forecast.day.HourlyWeather;
 import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
 import de.hdm.weatherapp.utils.ApiClient;
-import de.hdm.weatherapp.utils.ApiService;
 import de.hdm.weatherapp.utils.Utils;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class WeatherView extends FrameLayout {
-    private final ApiService apiService;
     private final Resources resources;
+    private final Handler handler;
 
     private final LinearLayout weatherContainer;
 
     private final TextView titleView;
     private final TextView subtitleView;
-    private final TextView feelsLikeView;
-    private final TextView windSpeedView;
     private final TextView temperatureView;
+
+    private final Chip feelsLikeChip;
+    private final Chip windSpeedChip;
+    private final Slider timeSlider;
 
     private final WeatherIconView weatherIconView;
     private final WeekForecastView weekForecastView;
 
-    private DayForecastResponse dayForecastResponse;
+    private final  Runnable weatherUpdater = new Runnable() {
+        @Override
+        public void run() {
+            loadWeather(latitude, longitude);
+            handler.postDelayed(weatherUpdater, 10000);
+        }
+    };
+
+    private double latitude;
+    private double longitude;
 
     public WeatherView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         inflate(context, R.layout.weather, this);
 
-        apiService = ApiClient.getClient().create(ApiService.class);
+        handler = new Handler();
         resources = getResources();
 
-        weatherContainer = this.findViewById(R.id.weather_container);
+        weatherContainer = findViewById(R.id.weather_container);
+        weatherContainer.setVisibility(View.GONE);
 
-        titleView = this.findViewById(R.id.title);
-        subtitleView = this.findViewById(R.id.subtitle);
-        feelsLikeView = this.findViewById(R.id.feels_like);
-        windSpeedView = this.findViewById(R.id.wind_speed);
-        weatherIconView = this.findViewById(R.id.weather_icon);
-        temperatureView = this.findViewById(R.id.temperature);
-        weekForecastView = this.findViewById(R.id.week_forecast);
+        titleView = findViewById(R.id.title);
+        subtitleView = findViewById(R.id.subtitle);
 
-        Slider timeSlider = this.findViewById(R.id.time_slider);
-        LabelFormatter labelFormatter = value -> {
-            final long dateTime = dayForecastResponse.hourly.get((int) value).dateTime;
-            String formattedTime = new SimpleDateFormat("HH:mm").format( new Date(dateTime * 1000L));
+        timeSlider = findViewById(R.id.time_slider);
+        feelsLikeChip = findViewById(R.id.feels_like);
+        windSpeedChip = findViewById(R.id.wind_speed);
 
-            return String.format("%s Uhr", formattedTime);
-        };
+        weatherIconView = findViewById(R.id.weather_icon);
+        temperatureView = findViewById(R.id.temperature);
+        weekForecastView = findViewById(R.id.week_forecast);
+    }
 
-        timeSlider.setLabelFormatter(labelFormatter);
-        timeSlider.addOnChangeListener((slider, value, fromUser) -> {
-            updateWeatherView(dayForecastResponse.hourly.get((int) value));
-        });
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacks(weatherUpdater);
     }
 
     public void bindLocation(double latitude, double longitude) {
-        loadWeather(latitude, longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+        weatherUpdater.run();
     }
 
     private void loadWeather(double latitude, double longitude) {
@@ -96,78 +94,86 @@ public class WeatherView extends FrameLayout {
     }
 
     private void loadCurrentWeather(double latitude, double longitude) {
-        Call<CurrentWeatherResponse> call = apiService.getCurrentWeather(latitude, longitude, "metric", "de", ApiClient.API_KEY);
-        call.enqueue(new Callback<CurrentWeatherResponse>() {
+        ApiClient.getClient().loadCurrentWeather(latitude, longitude, new ApiClient.ResponseListener<CurrentWeatherResponse>() {
             @Override
-            public void onResponse(@NotNull Call<CurrentWeatherResponse> call, @NotNull Response<CurrentWeatherResponse> response) {
-                CurrentWeatherResponse weatherResponse = response.body();
-                if (weatherResponse != null) updateWeatherView(weatherResponse);
+            public void onResponse(CurrentWeatherResponse response) {
+                updateWeatherView(response);
             }
 
             @Override
-            public void onFailure(@NotNull Call<CurrentWeatherResponse> call, Throwable t) {
-                Log.e("Oh noo CurrentForecast.", t.getMessage());
+            public void onFailure(Throwable throwable) {
+                Log.e("Oh noo CurrentForecast.", throwable.getMessage());
             }
         });
     }
 
     private void loadHourlyForecast(double latitude, double longitude) {
-        Call<DayForecastResponse> call = apiService.getDayForecast(latitude, longitude, "metric", "de", "current,daily,minutely,alerts", ApiClient.API_KEY);
-        call.enqueue(new Callback<DayForecastResponse>() {
+        ApiClient.getClient().loadDayForecast(latitude, longitude, new ApiClient.ResponseListener<DayForecastResponse>() {
             @Override
-            public void onResponse(@NotNull Call<DayForecastResponse> call, @NotNull Response<DayForecastResponse> response) {
-                DayForecastResponse forecastResponse = response.body();
-                if (forecastResponse != null) dayForecastResponse = forecastResponse;
+            public void onResponse(DayForecastResponse response) {
+                initTimeSlider(response);
             }
 
             @Override
-            public void onFailure(@NotNull Call<DayForecastResponse> call, @NotNull Throwable t) {
-                Log.e("Oh noo HourlyForecast.", t.getMessage());
+            public void onFailure(Throwable throwable) {
+                Log.e("Oh noo HourlyForecast.", throwable.getMessage());
             }
         });
     }
 
     private void loadWeekForecast(double latitude, double longitude) {
-        Call<WeekForecastResponse> call = apiService.getWeekForecast(latitude, longitude, "metric", "de", "current,minutely,hourly,alerts", ApiClient.API_KEY);
-        call.enqueue(new Callback<WeekForecastResponse>() {
+        ApiClient.getClient().loadWeekForecast(latitude, longitude, new ApiClient.ResponseListener<WeekForecastResponse>() {
             @Override
-            public void onResponse(@NotNull Call<WeekForecastResponse> call, @NotNull Response<WeekForecastResponse> response) {
-                WeekForecastResponse forecastResponse = response.body();
-                if (forecastResponse != null) setWeekForecast(forecastResponse);
+            public void onResponse(WeekForecastResponse response) {
+                setWeekForecast(response);
             }
 
             @Override
-            public void onFailure(@NotNull Call<WeekForecastResponse> call, @NotNull Throwable t) {
-                Log.e("Oh noo WeeklyForecast.", t.getMessage());
+            public void onFailure(Throwable throwable) {
+                Log.e("Oh noo WeeklyForecast.", throwable.getMessage());
             }
+        });
+    }
+
+    private void initTimeSlider(DayForecastResponse response) {
+        timeSlider.setLabelFormatter(value -> {
+            final long dateTime = response.hourly.get((int) value).dateTime;
+            return resources.getString(R.string.slider_label, formatTime(dateTime, "HH:mm"));
+        });
+
+        timeSlider.addOnChangeListener((slider, value, fromUser) -> {
+            updateWeatherView(response.hourly.get((int) value));
         });
     }
 
     private void updateWeatherView(CurrentWeatherResponse response) {
         final WeatherItem weather = response.weather.get(0);
 
-        updateTitle(response.name);
-        updteSubtitle(weather.description);
+        updateTitle(response.name, response.sys.country);
+        updateSubtitle(weather.description, response.dt);
         updateTemperature(response.main.temp);
         updateWeatherDetails(response.main.feelsLike, response.wind.speed);
         updateWeatherIcon(weather.id);
+
+        weatherContainer.setVisibility(View.VISIBLE);
     }
 
     private void updateWeatherView(HourlyWeather response) {
         WeatherItem weather = response.weather.get(0);
 
-        updteSubtitle(weather.description);
+        updateSubtitle(weather.description, response.dateTime);
         updateWeatherIcon(weather.id);
         updateTemperature(response.temp);
         updateWeatherDetails(response.feelsLike, response.windSpeed);
     }
 
-    private void updateTitle(String title) {
-        this.titleView.setText(title);
+    private void updateTitle(String city, String country) {
+        this.titleView.setText(resources.getString(R.string.subtitle, city, country));
     }
 
-    private void updteSubtitle(String subtitle) {
-        this.subtitleView.setText(subtitle);
+    private void updateSubtitle(String subtitle, long dateTime) {
+        String formattedDateTime = formatTime(dateTime, "EE HH:mm");
+        this.subtitleView.setText(resources.getString(R.string.subtitle, formattedDateTime, subtitle));
     }
 
     private void updateWeatherIcon(int weatherId) {
@@ -179,11 +185,15 @@ public class WeatherView extends FrameLayout {
     }
 
     private void updateWeatherDetails(double feelsLike, double windSpeed) {
-        this.feelsLikeView.setText(resources.getString(R.string.feels_like, String.valueOf(feelsLike)));
-        this.windSpeedView.setText(resources.getString(R.string.wind_speed, String.valueOf(windSpeed)));
+        this.feelsLikeChip.setText(resources.getString(R.string.feels_like, String.valueOf(feelsLike)));
+        this.windSpeedChip.setText(resources.getString(R.string.wind_speed, String.valueOf(windSpeed)));
     }
 
     private void setWeekForecast(WeekForecastResponse response) {
         weekForecastView.setWeekForecast(response);
+    }
+
+    private String formatTime(long dateTime, String pattern) {
+        return Utils.formatDateTime(dateTime, pattern);
     }
 }

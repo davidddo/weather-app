@@ -3,7 +3,6 @@ package de.hdm.weatherapp.utils;
 import de.hdm.weatherapp.R;
 
 public class WeatherUtils {
-
     public static int getWeatherIcon(int code) {
         if (code / 100 == 2) {
             return R.drawable.ic_few_clouds;

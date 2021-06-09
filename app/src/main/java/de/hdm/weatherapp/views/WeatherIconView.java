@@ -7,9 +7,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 
 import com.bumptech.glide.Glide;
 
-import de.hdm.weatherapp.models.common.WeatherItem;
 import de.hdm.weatherapp.utils.WeatherUtils;
-
 
 public class WeatherIconView extends AppCompatImageView {
 

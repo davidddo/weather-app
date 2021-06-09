@@ -12,7 +12,10 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
+import java.util.Locale;
 
 import de.hdm.weatherapp.R;
 
@@ -35,11 +38,8 @@ public class Utils {
         }
     }
 
-    public static long getHourDateTime(long time){
-
-        time = time - (time % 3600);
-
-        return time;
+    public static String formatDateTime(long dateTime, String pattern) {
+        return new SimpleDateFormat(pattern, Locale.GERMANY).format(new Date(dateTime * 1000L));
     }
 
     public static NavController getNavigationController(FragmentManager fragmentManager) {

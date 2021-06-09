@@ -41,6 +41,8 @@ public class WeekForecastView extends RecyclerView {
         setNestedScrollingEnabled(false);
     }
 
+
+
     public void setWeekForecast(WeekForecastResponse forecast) {
         List<DailyWeather> dailyWeather = forecast.daily;
         dailyWeather.remove(0);

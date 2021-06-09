@@ -25,10 +25,14 @@
     <string name="search_label">Search</string>
 
     <!-- Strings used of the weather details -->
+    <string name="title">%1$s, %2$s</string>
+    <string name="subtitle">%1$s Uhr, %2$s</string>
+    <string name="slider_label">%1$s Uhr</string>
     <string name="temperature">%1$s°</string>
     <string name="feels_like">Gefühlte %1$s°</string>
     <string name="wind_speed">%1$s km/h Wind</string>
     <string name="humidity">%1$s Luftfeuchtigkeit</string>
     <string name="search_title">Stadt suchen</string>
+    <string name="min_max_divider">/</string>
 
 </resources>

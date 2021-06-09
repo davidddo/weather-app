@@ -5,85 +5,97 @@
     android:id="@+id/weather_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     android:animateLayoutChanges="true"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceHeadline4" />
-
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:textAppearance="?attr/textAppearanceHeadline4"
+        android:textColor="@color/black" />
 
     <LinearLayout
+        android:id="@+id/current_weather_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp">
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/temperature"
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_weight="1"
-            android:text="30"
-            android:textSize="80sp" />
-
-        <de.hdm.weatherapp.views.WeatherIconView
-            android:id="@+id/weather_icon"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:cropToPadding="true"
-            android:padding="16dp"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/icon_cloudy_sunny" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:id="@+id/feels_like"
-            android:layout_width="wrap_content"
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:drawablePadding="2dp"
-            app:drawableLeftCompat="@drawable/ic_air_24dp" />
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?android:attr/textColorSecondary" />
 
-        <TextView
-            android:id="@+id/wind_speed"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:drawablePadding="2dp"
-            app:drawableLeftCompat="@drawable/ic_air_24dp" />
+            android:layout_marginBottom="16dp">
 
+            <TextView
+                android:id="@+id/temperature"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_weight="1"
+                android:text="30"
+                android:textAppearance="?attr/textAppearanceHeadline4"
+                android:textColor="@color/black"
+                android:textSize="80sp" />
+
+            <de.hdm.weatherapp.views.WeatherIconView
+                android:id="@+id/weather_icon"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:cropToPadding="true"
+                android:padding="16dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/icon_cloudy_sunny" />
+
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/feels_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipIcon="@drawable/ic_air_24dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/wind_speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipIcon="@drawable/ic_air_24dp" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
     </LinearLayout>
 
     <com.google.android.material.slider.Slider
         android:id="@+id/time_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stepSize="1"
         android:value="0"
         android:valueFrom="0"
-        android:valueTo="24"
-        android:stepSize="1"/>
+        android:valueTo="48" />
+
 
     <de.hdm.weatherapp.views.WeekForecastView
         android:id="@+id/week_forecast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         tools:listitem="@layout/forecast_item" />
 
 </LinearLayout>
