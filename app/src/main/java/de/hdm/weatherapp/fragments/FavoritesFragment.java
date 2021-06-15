@@ -222,6 +222,11 @@ public class FavoritesFragment extends Fragment {
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mValues.size());
             }
+
+            @Override
+            public void onClick(View v) {
+
+            }
         }
     }
 
