@@ -15,7 +15,11 @@
         android:id="@+id/navigation_favourites"
         android:name="de.hdm.weatherapp.fragments.FavoritesFragment"
         android:label="@string/favourites_label"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_navigation_favourites_to_navigation_search_result"
+            app:destination="@id/navigation_search_result" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_search"

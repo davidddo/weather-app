@@ -168,7 +168,7 @@ public class WeatherView extends FrameLayout {
     }
 
     private void updateTitle(String city, String country) {
-        this.titleView.setText(resources.getString(R.string.subtitle, city, country));
+        this.titleView.setText(resources.getString(R.string.title, city, country));
     }
 
     private void updateSubtitle(String subtitle, long dateTime) {
