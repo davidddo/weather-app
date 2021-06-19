@@ -1,12 +1,11 @@
 package de.hdm.weatherapp.utils;
 
-import de.hdm.weatherapp.models.current.CurrentWeatherResponse;
-import de.hdm.weatherapp.models.forecast.day.DayForecastResponse;
-import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
+import de.hdm.weatherapp.interfaces.current.CurrentWeatherResponse;
+import de.hdm.weatherapp.interfaces.forecast.day.DayForecastResponse;
+import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.QueryName;
 
 public interface ApiService {
 

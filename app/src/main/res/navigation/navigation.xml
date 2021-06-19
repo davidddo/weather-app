@@ -13,12 +13,16 @@
 
     <fragment
         android:id="@+id/navigation_favourites"
-        android:name="de.hdm.weatherapp.fragments.FavoritesFragment"
+        android:name="de.hdm.weatherapp.fragments.FavouritesFragment"
         android:label="@string/favourites_label"
         tools:layout="@layout/fragment_favorites" >
         <action
             android:id="@+id/action_navigation_favourites_to_navigation_search_result"
-            app:destination="@id/navigation_search_result" />
+            app:destination="@id/navigation_search_result"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -37,14 +41,11 @@
 
     <fragment
         android:id="@+id/navigation_search_result"
-        android:name="de.hdm.weatherapp.fragments.SearchResultFragment"
-        tools:layout="@layout/fragment_search_result">
+        android:name="de.hdm.weatherapp.fragments.CityWeatherFragment"
+        tools:layout="@layout/fragment_city_weather">
         <argument
             android:name="cityId"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_navigation_search_result_to_navigation_search"
-            app:destination="@id/navigation_search" />
     </fragment>
 
 </navigation>

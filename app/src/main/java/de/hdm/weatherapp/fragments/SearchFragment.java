@@ -37,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.database.AppDatabase;
-import de.hdm.weatherapp.database.CityDatabase;
 import de.hdm.weatherapp.database.dao.CityDao;
 import de.hdm.weatherapp.database.entity.CityEntity;
 
@@ -57,12 +56,11 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-
         RecyclerView recyclerView = view.findViewById(R.id.search_recycler_view);
         searchAdapter = new SearchAdapter(new CityComparator());
 
-        CityDatabase cityDatabase = AppDatabase.instance(requireContext()).getCityDatabase();
-        searchViewModel = new ViewModelProvider(this, new SearchViewModel.Factory(cityDatabase.cityDao()))
+        AppDatabase database = AppDatabase.getInstance(requireContext());
+        searchViewModel = new ViewModelProvider(this, new SearchViewModel.Factory(database.cityDao()))
                 .get(SearchViewModel.class);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

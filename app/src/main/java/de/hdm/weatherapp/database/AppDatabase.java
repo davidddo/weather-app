@@ -2,39 +2,61 @@ package de.hdm.weatherapp.database;
 
 import android.content.Context;
 
+import androidx.room.Database;
+import androidx.room.ProvidedTypeConverter;
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
-import de.hdm.weatherapp.database.entity.FavoriteEntity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-public class AppDatabase {
-    private static AppDatabase instance = null;
-    private final CityDatabase cityDatabase;
-    private final FavoriteDatabase favoriteDatabase;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-    private AppDatabase(Context context) {
-        cityDatabase = Room.databaseBuilder(context, CityDatabase.class, "weather_app")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
+import de.hdm.weatherapp.database.converter.CurrentWeatherConverter;
+import de.hdm.weatherapp.database.converter.DayForecastConverter;
+import de.hdm.weatherapp.database.converter.WeekForecastConverter;
+import de.hdm.weatherapp.database.dao.CacheDao;
+import de.hdm.weatherapp.database.dao.CityDao;
+import de.hdm.weatherapp.database.entity.CacheEntity;
+import de.hdm.weatherapp.database.entity.CityEntity;
+import de.hdm.weatherapp.utils.AppExecutors;
+import de.hdm.weatherapp.utils.Utils;
 
-        favoriteDatabase = Room.databaseBuilder(context, FavoriteDatabase.class, "weather_app")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
-    }
+@Database(entities = {CityEntity.class, CacheEntity.class}, exportSchema = false, version = 10)
+@TypeConverters({CurrentWeatherConverter.class, DayForecastConverter.class, WeekForecastConverter.class})
+public abstract class AppDatabase extends RoomDatabase {
+    private static final String DATABASE_NAME = "weather_app";
+    private static AppDatabase database;
 
-    public static synchronized AppDatabase instance(Context context) {
-        if (instance == null) {
-            instance = new AppDatabase(context);
+    public static synchronized AppDatabase getInstance(Context context) {
+        if (database == null) {
+            database = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
+                    .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
-        return instance;
+
+        return database;
     }
 
-    public CityDatabase getCityDatabase() {
-        return cityDatabase;
+    public void initCityDatabase(Context context) {
+        if (database.cityDao().getAny() != null) {
+            return;
+        }
+
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            String json = Utils.getJsonFromAssets(context, "cities.list.json");
+            Type type = new TypeToken<ArrayList<CityEntity>>() {}.getType();
+
+            List<CityEntity> cities = new Gson().fromJson(json, type);
+            database.cityDao().insertMany(cities);
+        });
     }
 
-    public FavoriteDatabase getFavoriteDatabase() {
-        return favoriteDatabase;
-    }
+    public abstract CityDao cityDao();
+    public abstract CacheDao cacheDao();
 }

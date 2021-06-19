@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Locale;
 
 import de.hdm.weatherapp.R;
-import de.hdm.weatherapp.models.forecast.week.DailyWeather;
-import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
+import de.hdm.weatherapp.interfaces.forecast.week.DailyWeather;
+import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 
 public class WeekForecastView extends RecyclerView {
     private final WeekForecastViewAdapter adapter;
@@ -41,12 +41,9 @@ public class WeekForecastView extends RecyclerView {
         setNestedScrollingEnabled(false);
     }
 
-
-
     public void setWeekForecast(WeekForecastResponse forecast) {
         List<DailyWeather> dailyWeather = forecast.daily;
         dailyWeather.remove(0);
-
         adapter.setDaily(dailyWeather);
     }
 

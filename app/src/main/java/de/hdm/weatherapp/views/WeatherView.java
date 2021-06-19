@@ -1,9 +1,7 @@
 package de.hdm.weatherapp.views;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,17 +14,22 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.slider.Slider;
 
 import de.hdm.weatherapp.R;
-import de.hdm.weatherapp.models.common.WeatherItem;
-import de.hdm.weatherapp.models.current.CurrentWeatherResponse;
-import de.hdm.weatherapp.models.forecast.day.DayForecastResponse;
-import de.hdm.weatherapp.models.forecast.day.HourlyWeather;
-import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
+import de.hdm.weatherapp.database.entity.CacheEntity;
+import de.hdm.weatherapp.database.repository.CacheRepository;
+import de.hdm.weatherapp.interfaces.Location;
+import de.hdm.weatherapp.interfaces.common.WeatherItem;
+import de.hdm.weatherapp.interfaces.current.CurrentWeatherResponse;
+import de.hdm.weatherapp.interfaces.forecast.day.DayForecastResponse;
+import de.hdm.weatherapp.interfaces.forecast.day.HourlyWeather;
+import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 import de.hdm.weatherapp.utils.ApiClient;
+import de.hdm.weatherapp.utils.AppExecutors;
 import de.hdm.weatherapp.utils.Utils;
 
 public class WeatherView extends FrameLayout {
     private final Resources resources;
     private final Handler handler;
+    private final CacheRepository cacheRepository;
 
     private final LinearLayout weatherContainer;
 
@@ -41,16 +44,15 @@ public class WeatherView extends FrameLayout {
     private final WeatherIconView weatherIconView;
     private final WeekForecastView weekForecastView;
 
+    private Location location;
+
     private final  Runnable weatherUpdater = new Runnable() {
         @Override
         public void run() {
-            loadWeather(latitude, longitude);
-            handler.postDelayed(weatherUpdater, 10000);
+            loadWeather(location);
+            handler.postDelayed(weatherUpdater, 600000);
         }
     };
-
-    private double latitude;
-    private double longitude;
 
     public WeatherView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -58,6 +60,7 @@ public class WeatherView extends FrameLayout {
 
         handler = new Handler();
         resources = getResources();
+        cacheRepository = new CacheRepository(context);
 
         weatherContainer = findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.GONE);
@@ -80,17 +83,29 @@ public class WeatherView extends FrameLayout {
         handler.removeCallbacks(weatherUpdater);
     }
 
-    public void bindLocation(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public void bindLocation(Location location) {
+        if (this.location == location) return;
+        this.location = location;
 
-        weatherUpdater.run();
+        loadWeather(location);
     }
 
-    private void loadWeather(double latitude, double longitude) {
+    private void loadWeather(Location location) {
+        CacheEntity cache = cacheRepository.getByLocation(location);
+        if (cache != null && cacheRepository.checkIfCacheIsValid(cache)) {
+            updateWeatherView(cache.currentWeather);
+            initTimeSlider(cache.dayForecast);
+            setWeekForecast(cache.weekForecast);
+
+            return;
+        }
+
+        double latitude = location.latitude;
+        double longitude = location.longitude;
+
         loadCurrentWeather(latitude, longitude);
-        loadWeekForecast(latitude, longitude);
         loadHourlyForecast(latitude, longitude);
+        loadWeekForecast(latitude, longitude);
     }
 
     private void loadCurrentWeather(double latitude, double longitude) {
@@ -98,6 +113,7 @@ public class WeatherView extends FrameLayout {
             @Override
             public void onResponse(CurrentWeatherResponse response) {
                 updateWeatherView(response);
+                cacheRepository.insertOrUpdate(latitude, longitude, response);
             }
 
             @Override
@@ -112,6 +128,7 @@ public class WeatherView extends FrameLayout {
             @Override
             public void onResponse(DayForecastResponse response) {
                 initTimeSlider(response);
+                cacheRepository.insertOrUpdate(latitude, longitude, response);
             }
 
             @Override
@@ -126,6 +143,7 @@ public class WeatherView extends FrameLayout {
             @Override
             public void onResponse(WeekForecastResponse response) {
                 setWeekForecast(response);
+                cacheRepository.insertOrUpdate(latitude, longitude, response);
             }
 
             @Override

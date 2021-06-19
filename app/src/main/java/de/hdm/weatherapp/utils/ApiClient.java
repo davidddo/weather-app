@@ -1,16 +1,14 @@
 package de.hdm.weatherapp.utils;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.NotNull;
 
-import de.hdm.weatherapp.models.common.Coord;
-import de.hdm.weatherapp.models.current.CurrentWeatherResponse;
-import de.hdm.weatherapp.models.forecast.day.DayForecastResponse;
-import de.hdm.weatherapp.models.forecast.week.WeekForecastResponse;
+import de.hdm.weatherapp.interfaces.common.Coord;
+import de.hdm.weatherapp.interfaces.current.CurrentWeatherResponse;
+import de.hdm.weatherapp.interfaces.forecast.day.DayForecastResponse;
+import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     public static final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
-    public static final String API_KEY = "5325f4945804ccc0b8c7c6dfbf3a8ef3";
+    public static final String API_KEY = "b084815f23310d91515df76000554abe";
 
     private static ApiClient instance;
     private static Retrofit retrofit;
