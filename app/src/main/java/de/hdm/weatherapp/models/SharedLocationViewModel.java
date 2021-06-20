@@ -1,6 +1,5 @@
 package de.hdm.weatherapp.models;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Criteria;
@@ -15,22 +14,15 @@ import androidx.lifecycle.ViewModel;
 
 import de.hdm.weatherapp.interfaces.Location;
 
-public class HomeViewModel extends ViewModel {
+public class SharedLocationViewModel extends ViewModel {
     private MediatorLiveData<Location> liveData;
     private LocationLiveData locationLiveData;
-
-    public HomeViewModel() {
-        System.out.println("wdadawkdawnofwaiofaf");
-    }
 
     public LiveData<Location> getLocation() {
         if (liveData == null) {
             liveData = new MediatorLiveData<>();
             locationLiveData = new LocationLiveData();
-
-            liveData.addSource(locationLiveData, location -> {
-                liveData.setValue(location);
-            });
+            liveData.addSource(locationLiveData, location -> liveData.setValue(location));
         }
 
         return liveData;

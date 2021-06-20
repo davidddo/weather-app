@@ -42,9 +42,7 @@ public class WeekForecastView extends RecyclerView {
     }
 
     public void setWeekForecast(WeekForecastResponse forecast) {
-        List<DailyWeather> dailyWeather = forecast.daily;
-        dailyWeather.remove(0);
-        adapter.setDaily(dailyWeather);
+        adapter.setDaily(forecast.daily);
     }
 
     class WeekForecastViewAdapter extends RecyclerView.Adapter<WeatherForecastViewHolder> {

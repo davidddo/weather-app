@@ -4,12 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import de.hdm.weatherapp.interfaces.Response;
 import de.hdm.weatherapp.interfaces.common.Clouds;
 import de.hdm.weatherapp.interfaces.common.Coord;
 import de.hdm.weatherapp.interfaces.common.WeatherItem;
 import de.hdm.weatherapp.interfaces.common.Wind;
 
-public class CurrentWeatherResponse {
+public class CurrentWeatherResponse implements Response {
 
     @SerializedName("dt")
     public int dt;

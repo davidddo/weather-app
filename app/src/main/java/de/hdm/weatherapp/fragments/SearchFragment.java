@@ -64,9 +64,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                 .get(SearchViewModel.class);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(searchAdapter.withLoadStateFooter(new SearchLoadStateAdapter(v -> {
-            searchAdapter.retry();
-        })));
+        recyclerView.setAdapter(searchAdapter.withLoadStateFooter(new SearchLoadStateAdapter(v -> searchAdapter.retry())));
 
         queryCities("");
 
@@ -104,9 +102,8 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     private void queryCities(String query) {
-        searchViewModel.getPagingSource(query).observe(getViewLifecycleOwner(), pagingData -> {
-            searchAdapter.submitData(getViewLifecycleOwner().getLifecycle(), pagingData);
-        });
+        searchViewModel.getPagingSource(query).observe(getViewLifecycleOwner(),
+                pagingData -> searchAdapter.submitData(getViewLifecycleOwner().getLifecycle(), pagingData));
     }
 
     private static class CityComparator extends DiffUtil.ItemCallback<CityEntity> {

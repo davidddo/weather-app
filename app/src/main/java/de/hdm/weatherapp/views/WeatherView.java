@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -23,7 +22,6 @@ import de.hdm.weatherapp.interfaces.forecast.day.DayForecastResponse;
 import de.hdm.weatherapp.interfaces.forecast.day.HourlyWeather;
 import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 import de.hdm.weatherapp.utils.ApiClient;
-import de.hdm.weatherapp.utils.AppExecutors;
 import de.hdm.weatherapp.utils.Utils;
 
 public class WeatherView extends FrameLayout {
@@ -96,7 +94,6 @@ public class WeatherView extends FrameLayout {
             updateWeatherView(cache.currentWeather);
             initTimeSlider(cache.dayForecast);
             setWeekForecast(cache.weekForecast);
-
             return;
         }
 
@@ -109,47 +106,23 @@ public class WeatherView extends FrameLayout {
     }
 
     private void loadCurrentWeather(double latitude, double longitude) {
-        ApiClient.getClient().loadCurrentWeather(latitude, longitude, new ApiClient.ResponseListener<CurrentWeatherResponse>() {
-            @Override
-            public void onResponse(CurrentWeatherResponse response) {
-                updateWeatherView(response);
-                cacheRepository.insertOrUpdate(latitude, longitude, response);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.e("Oh noo CurrentForecast.", throwable.getMessage());
-            }
+        ApiClient.getClient().loadCurrentWeather(latitude, longitude, response -> {
+            updateWeatherView(response);
+            cacheRepository.insertOrUpdate(latitude, longitude, response);
         });
     }
 
     private void loadHourlyForecast(double latitude, double longitude) {
-        ApiClient.getClient().loadDayForecast(latitude, longitude, new ApiClient.ResponseListener<DayForecastResponse>() {
-            @Override
-            public void onResponse(DayForecastResponse response) {
-                initTimeSlider(response);
-                cacheRepository.insertOrUpdate(latitude, longitude, response);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.e("Oh noo HourlyForecast.", throwable.getMessage());
-            }
+        ApiClient.getClient().loadDayForecast(latitude, longitude, response -> {
+            initTimeSlider(response);
+            cacheRepository.insertOrUpdate(latitude, longitude, response);
         });
     }
 
     private void loadWeekForecast(double latitude, double longitude) {
-        ApiClient.getClient().loadWeekForecast(latitude, longitude, new ApiClient.ResponseListener<WeekForecastResponse>() {
-            @Override
-            public void onResponse(WeekForecastResponse response) {
-                setWeekForecast(response);
-                cacheRepository.insertOrUpdate(latitude, longitude, response);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.e("Oh noo WeeklyForecast.", throwable.getMessage());
-            }
+        ApiClient.getClient().loadWeekForecast(latitude, longitude, response -> {
+            setWeekForecast(response);
+            cacheRepository.insertOrUpdate(latitude, longitude, response);
         });
     }
 
@@ -158,10 +131,7 @@ public class WeatherView extends FrameLayout {
             final long dateTime = response.hourly.get((int) value).dateTime;
             return resources.getString(R.string.slider_label, formatTime(dateTime, "HH:mm"));
         });
-
-        timeSlider.addOnChangeListener((slider, value, fromUser) -> {
-            updateWeatherView(response.hourly.get((int) value));
-        });
+        timeSlider.addOnChangeListener((slider, value, fromUser) -> updateWeatherView(response.hourly.get((int) value)));
     }
 
     private void updateWeatherView(CurrentWeatherResponse response) {

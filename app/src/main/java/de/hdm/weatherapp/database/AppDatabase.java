@@ -3,10 +3,8 @@ package de.hdm.weatherapp.database;
 import android.content.Context;
 
 import androidx.room.Database;
-import androidx.room.ProvidedTypeConverter;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
 import com.google.gson.Gson;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdm.weatherapp.database.converter.CurrentWeatherConverter;
+import de.hdm.weatherapp.database.converter.DateConverter;
 import de.hdm.weatherapp.database.converter.DayForecastConverter;
 import de.hdm.weatherapp.database.converter.WeekForecastConverter;
 import de.hdm.weatherapp.database.dao.CacheDao;
@@ -26,8 +25,8 @@ import de.hdm.weatherapp.database.entity.CityEntity;
 import de.hdm.weatherapp.utils.AppExecutors;
 import de.hdm.weatherapp.utils.Utils;
 
-@Database(entities = {CityEntity.class, CacheEntity.class}, exportSchema = false, version = 10)
-@TypeConverters({CurrentWeatherConverter.class, DayForecastConverter.class, WeekForecastConverter.class})
+@Database(entities = {CityEntity.class, CacheEntity.class}, exportSchema = false, version = 13)
+@TypeConverters({CurrentWeatherConverter.class, DayForecastConverter.class, WeekForecastConverter.class, DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "weather_app";
     private static AppDatabase database;

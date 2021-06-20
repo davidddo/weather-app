@@ -8,7 +8,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdm.weatherapp.R;
+import de.hdm.weatherapp.database.entity.CacheEntity;
 import de.hdm.weatherapp.database.entity.CityEntity;
+import de.hdm.weatherapp.database.repository.CacheRepository;
 import de.hdm.weatherapp.database.repository.CityRepository;
-import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
+import de.hdm.weatherapp.interfaces.Location;
+import de.hdm.weatherapp.interfaces.current.CurrentWeatherResponse;
 import de.hdm.weatherapp.models.FavouritesViewModel;
 import de.hdm.weatherapp.utils.ApiClient;
 import de.hdm.weatherapp.utils.AppExecutors;
 import de.hdm.weatherapp.views.WeatherIconView;
 
 public class FavouritesFragment extends Fragment {
+    private CacheRepository cacheRepository;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cacheRepository = new CacheRepository(requireContext());
     }
 
     @Override
@@ -52,7 +57,7 @@ public class FavouritesFragment extends Fragment {
         return view;
     }
 
-    public static class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
+    public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.ViewHolder> {
         private List<CityEntity> favourites = new ArrayList<>();
 
         public void submitList(List<CityEntity> favourites) {
@@ -72,26 +77,15 @@ public class FavouritesFragment extends Fragment {
         public void onBindViewHolder(@NotNull final ViewHolder holder, int position) {
             CityEntity city = favourites.get(position);
             if (city != null) {
-                holder.bind(city);
-
-                AppExecutors.getInstance().networkIO().execute(() -> {
-                    ApiClient.getClient().loadWeekForecast(city.coord.lat, city.coord.lon, new ApiClient.ResponseListener<WeekForecastResponse>() {
-                        @Override
-                        public void onResponse(WeekForecastResponse response) {
-                            String minTemp = String.format("%s°", (int) response.daily.get(0).temp.min);
-                            String maxTemp = String.format("%s°", (int) response.daily.get(0).temp.max);
-
-                            holder.minTempView.setText(minTemp);
-                            holder.maxTempView.setText(maxTemp);
-                            holder.weatherIconView.setWeatherId(response.daily.get(0).weather.get(0).id);
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            Log.e("Oh noo couldn't save favorite.", throwable.getMessage());
-                        }
-                    });
-                });
+                Location location = new Location(city.coord.lat, city.coord.lon);
+                CacheEntity cache = cacheRepository.getByLocation(location);
+                if (cache != null && cacheRepository.checkIfCacheIsValid(cache)) {
+                    holder.bind(city, cache.currentWeather);
+                } else {
+                    AppExecutors.getInstance().networkIO().execute(
+                            () -> ApiClient.getClient().loadCurrentWeather(city.coord.lat, city.coord.lon,
+                                    response -> holder.bind(city, response)));
+                }
 
                 holder.view.setOnClickListener(view -> {
                     Bundle args = new Bundle();
@@ -125,15 +119,13 @@ public class FavouritesFragment extends Fragment {
                 this.weatherIconView = itemView.findViewById(R.id.weather_icon);
             }
 
-            public void removeAt(int position) {
-                favourites.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, favourites.size());
-            }
-
-            public void bind(CityEntity city) {
+            public void bind(CityEntity city, CurrentWeatherResponse response) {
                 name.setText(city.name);
                 country.setText(city.country);
+
+                minTempView.setText(String.format("%s°", (int) response.main.tempMin));
+                maxTempView.setText(String.format("%s°", (int) response.main.tempMax));
+                weatherIconView.setWeatherId(response.weather.get(0).id);
             }
         }
     }

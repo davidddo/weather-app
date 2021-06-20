@@ -2,6 +2,9 @@ package de.hdm.weatherapp.database.repository;
 
 import android.content.Context;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import de.hdm.weatherapp.database.AppDatabase;
 import de.hdm.weatherapp.database.dao.CacheDao;
 import de.hdm.weatherapp.database.entity.CacheEntity;
@@ -12,6 +15,8 @@ import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 import de.hdm.weatherapp.utils.AppExecutors;
 
 public class CacheRepository {
+    private static final int TEN_MINUTES = 10 * 60 * 1000;
+
     private final AppDatabase database;
     private final CacheDao cacheDao;
 
@@ -25,44 +30,51 @@ public class CacheRepository {
     }
 
     public void insertOrUpdate(double latitude, double longitude, CurrentWeatherResponse response) {
-        AppExecutors.getInstance().diskIO().execute(() -> database.runInTransaction(() -> {
-            CacheEntity any = cacheDao.getAnyByLatLong(latitude, longitude);
-            if (any == null) {
-                cacheDao.insert(new CacheEntity(latitude, longitude, response));
-            } else {
-                cacheDao.update(latitude, longitude, response);
-            }
-        }));
+        insertOrUpdate(latitude, longitude, (insert, timestamp) -> {
+            if (insert) cacheDao.insert(new CacheEntity(latitude, longitude, response, timestamp));
+            else cacheDao.update(latitude, longitude, response);
+        });
     }
 
     public void insertOrUpdate(double latitude, double longitude, DayForecastResponse response) {
-        AppExecutors.getInstance().diskIO().execute(() -> database.runInTransaction(() -> {
-            CacheEntity any = cacheDao.getAnyByLatLong(latitude, longitude);
-            if (any == null) {
-                cacheDao.insert(new CacheEntity(latitude, longitude, response));
-            } else {
-                cacheDao.update(latitude, longitude, response);
-            }
-        }));
+        insertOrUpdate(latitude, longitude, (insert, timestamp) -> {
+            if (insert) cacheDao.insert(new CacheEntity(latitude, longitude, response, timestamp));
+            else cacheDao.update(latitude, longitude, response);
+        });
     }
 
     public void insertOrUpdate(double latitude, double longitude, WeekForecastResponse response) {
+        insertOrUpdate(latitude, longitude, (insert, timestamp) -> {
+            if (insert) cacheDao.insert(new CacheEntity(latitude, longitude, response, timestamp));
+            else cacheDao.update(latitude, longitude, response);
+        });
+    }
+
+    private void insertOrUpdate(double latitude, double longitude, InsertOrUpdateListener listener) {
         AppExecutors.getInstance().diskIO().execute(() -> database.runInTransaction(() -> {
             CacheEntity any = cacheDao.getAnyByLatLong(latitude, longitude);
-            if (any == null) {
-                cacheDao.insert(new CacheEntity(latitude, longitude, response));
-            } else {
-                cacheDao.update(latitude, longitude, response);
-            }
+            Date timestamp = new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
+            listener.on(any == null, timestamp);
         }));
     }
 
     public boolean checkIfCacheIsValid(CacheEntity cache) {
-        if (cache.currentWeather == null || cache.dayForecast == null || cache.weekForecast == null) {
+        long tenAgo = System.currentTimeMillis() - TEN_MINUTES;
+        long timestamp = cache.timestamp.getTime();
+
+        if (cache.currentWeather == null
+                || cache.dayForecast == null
+                || cache.weekForecast == null
+                || timestamp < tenAgo) {
             this.cacheDao.delete(cache);
+            System.out.println("Delete");
             return false;
         }
 
         return true;
+    }
+
+    interface InsertOrUpdateListener {
+        void on(boolean insert, Date timestamp);
     }
 }

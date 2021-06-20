@@ -5,7 +5,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import de.hdm.weatherapp.database.entity.CacheEntity;
 import de.hdm.weatherapp.interfaces.current.CurrentWeatherResponse;
@@ -14,9 +13,6 @@ import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 
 @Dao
 public interface CacheDao {
-    @Query("SELECT * FROM cache WHERE id = :id")
-    CacheEntity getById(int id);
-
     @Query("SELECT * FROM cache WHERE latitude = :latitude AND longitude = :longitude LIMIT 1")
     CacheEntity getAnyByLatLong(double latitude, double longitude);
 

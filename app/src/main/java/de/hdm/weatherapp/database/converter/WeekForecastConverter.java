@@ -7,18 +7,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import de.hdm.weatherapp.interfaces.forecast.day.DayForecastResponse;
-
-
-
-import androidx.room.TypeConverter;
-
-        import com.google.gson.Gson;
-        import com.google.gson.reflect.TypeToken;
-
-        import java.lang.reflect.Type;
-
-        import de.hdm.weatherapp.interfaces.forecast.day.DayForecastResponse;
 import de.hdm.weatherapp.interfaces.forecast.week.WeekForecastResponse;
 
 public class WeekForecastConverter {

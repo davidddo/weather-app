@@ -1,19 +1,16 @@
 package de.hdm.weatherapp.utils;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 
-import androidx.annotation.RequiresPermission;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,7 +28,7 @@ public class Utils {
             inputStream.read(buffer);
             inputStream.close();
 
-            return new String(buffer, "UTF-8");
+            return new String(buffer, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

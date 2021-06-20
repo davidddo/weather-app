@@ -20,14 +20,14 @@ import java.util.Random;
 import de.hdm.weatherapp.R;
 
 import de.hdm.weatherapp.interfaces.Location;
-import de.hdm.weatherapp.models.HomeViewModel;
+import de.hdm.weatherapp.models.SharedLocationViewModel;
 import de.hdm.weatherapp.views.WeatherView;
 
 public class HomeFragment extends Fragment {
     private final String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private final double[][] fallbackCities = {{48.783333, 9.183333}, {40.730610, -73.935242}, {51.509865, -0.118092}, {38.736946, -9.142685}};
 
-    private HomeViewModel model;
+    private SharedLocationViewModel model;
     private WeatherView weatherView;
 
     private final ActivityResultLauncher<String[]> requestPermissions =
@@ -46,12 +46,8 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       System.out.println("ONCREATE");
-
-        model = new ViewModelProvider(this).get(HomeViewModel.class);
-        model.getLocation().observe(this, location -> {
-            weatherView.bindLocation(location);
-        });
+        model = new ViewModelProvider(requireActivity()).get(SharedLocationViewModel.class);
+        model.getLocation().observe(this, location -> weatherView.bindLocation(location));
 
        checkPermissions();
     }

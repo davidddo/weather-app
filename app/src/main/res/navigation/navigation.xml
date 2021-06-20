@@ -15,10 +15,10 @@
         android:id="@+id/navigation_favourites"
         android:name="de.hdm.weatherapp.fragments.FavouritesFragment"
         android:label="@string/favourites_label"
-        tools:layout="@layout/fragment_favorites" >
+        tools:layout="@layout/fragment_favorites">
         <action
             android:id="@+id/action_navigation_favourites_to_navigation_search_result"
-            app:destination="@id/navigation_search_result"
+            app:destination="@id/navigation_city_weather"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -32,15 +32,15 @@
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_navigation_search_to_navigation_search_result"
-            app:destination="@id/navigation_search_result"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:destination="@id/navigation_city_weather"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_search_result"
+        android:id="@+id/navigation_city_weather"
         android:name="de.hdm.weatherapp.fragments.CityWeatherFragment"
         tools:layout="@layout/fragment_city_weather">
         <argument

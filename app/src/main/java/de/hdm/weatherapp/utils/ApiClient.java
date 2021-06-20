@@ -1,5 +1,7 @@
 package de.hdm.weatherapp.utils;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -43,10 +45,6 @@ public class ApiClient {
         return instance;
     }
 
-    public Call<CurrentWeatherResponse> loadCurrentWeather(Coord coord, ResponseListener<CurrentWeatherResponse> listener) {
-        return loadCurrentWeather(coord.lat, coord.lon, listener);
-    }
-
     public Call<CurrentWeatherResponse> loadCurrentWeather(double latitude, double longitude, ResponseListener<CurrentWeatherResponse> listener) {
         Call<CurrentWeatherResponse> call = apiService.getCurrentWeather(latitude, longitude, ApiClient.API_KEY);
         return enqueueApiCall(call, listener);
@@ -71,7 +69,7 @@ public class ApiClient {
 
             @Override
             public void onFailure(@NotNull Call<T> call, @NotNull Throwable throwable) {
-                listener.onFailure(throwable);
+                Log.e("WeatherAPI", throwable.getMessage());
             }
         });
 
@@ -80,7 +78,5 @@ public class ApiClient {
 
     public interface ResponseListener<T> {
         void onResponse(T response);
-
-        void onFailure(Throwable throwable);
     }
 }
