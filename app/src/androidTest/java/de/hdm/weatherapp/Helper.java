@@ -36,7 +36,6 @@ public class Helper {
             protected boolean matchesSafely(final RecyclerView view) {
                 RecyclerView.ViewHolder viewHolder = view.findViewHolderForAdapterPosition(position);
                 if (viewHolder == null) {
-                    // has no item on such position
                     return false;
                 }
                 return itemMatcher.matches(viewHolder.itemView);
@@ -74,20 +73,12 @@ public class Helper {
 
             @Override
             public boolean matchesSafely(View view) {
-                if (!(view instanceof TextView) && !(view instanceof EditText)) {
+                if (!(view instanceof TextView)) {
                     return false;
                 }
-                if (view != null) {
-                    String text;
-                    if (view instanceof TextView) {
-                        text = ((TextView) view).getText().toString();
-                    } else {
-                        text = ((EditText) view).getText().toString();
-                    }
 
-                    return (!TextUtils.isEmpty(text));
-                }
-                return false;
+                String text = ((TextView) view).getText().toString();
+                return (!TextUtils.isEmpty(text));
             }
         };
     }

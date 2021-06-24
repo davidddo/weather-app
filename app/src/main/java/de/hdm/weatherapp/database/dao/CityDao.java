@@ -33,4 +33,7 @@ public interface CityDao {
 
     @Query("UPDATE cities SET saved = 0")
     void reset();
+
+    @Query("DELETE FROM cities")
+    void clear();
 }

@@ -43,11 +43,11 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public void initCityDatabase(Context context) {
-        if (database.cityDao().getAny() != null) {
-            return;
-        }
-
         AppExecutors.getInstance().diskIO().execute(() -> {
+            if (database.cityDao().getAny() != null) {
+                return;
+            }
+
             String json = Utils.getJsonFromAssets(context, "cities.list.json");
             Type type = new TypeToken<ArrayList<CityEntity>>() {}.getType();
 
