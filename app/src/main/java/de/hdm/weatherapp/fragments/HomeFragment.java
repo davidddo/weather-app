@@ -25,7 +25,7 @@ import de.hdm.weatherapp.views.WeatherView;
 
 public class HomeFragment extends Fragment {
     private final String[] requiredPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    private final double[][] fallbackCities = {{48.783333, 9.183333}, {40.730610, -73.935242}, {51.509865, -0.118092}, {38.736946, -9.142685}};
+    private final double[] fallbackCity = {48.783333, 9.183333};
 
     private SharedLocationViewModel model;
     private WeatherView weatherView;
@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
                 if (allGranted) {
                     model.requestLocationUpdates(requireContext());
                 } else {
-                    weatherView.bindLocation(getRandomCityLocation());
+                    weatherView.bindLocation(getFallbackCityLocation());
                 }
             });
 
@@ -68,8 +68,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private Location getRandomCityLocation() {
-        double[] coordinates = fallbackCities[new Random().nextInt(fallbackCities.length)];
-        return new Location(coordinates[0], coordinates[1]);
+    private Location getFallbackCityLocation() {
+        return new Location(fallbackCity[0], fallbackCity[1]);
     }
 }

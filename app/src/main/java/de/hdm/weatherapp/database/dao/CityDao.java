@@ -30,4 +30,7 @@ public interface CityDao {
 
     @Query("UPDATE cities SET saved = :saved WHERE id = :id")
     void update(int id, boolean saved);
+
+    @Query("UPDATE cities SET saved = 0")
+    void reset();
 }
