@@ -51,7 +51,7 @@ public class CityWeatherFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        inflater.inflate(R.menu.search_result_menu, menu);
+        inflater.inflate(R.menu.city_weather_menu, menu);
         favouriteItem = menu.findItem(R.id.action_favourite);
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -61,13 +61,8 @@ public class CityWeatherFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
         if (item.getItemId() == R.id.action_favourite) {
             final CityEntity city = Objects.requireNonNull(model.city.getValue());
-            if (city.saved) {
-                model.updateBookmark(false);
-                updateFavouriteIcon(false);
-            } else {
-                model.updateBookmark(true);
-                updateFavouriteIcon(true);
-            }
+            model.updateBookmark(!city.saved);
+            updateFavouriteIcon(!city.saved);
 
             return true;
         }

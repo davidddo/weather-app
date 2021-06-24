@@ -8,13 +8,13 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="de.hdm.weatherapp.fragments.HomeFragment"
-        android:label="@string/home_label"
+        android:label="@string/current_position_title"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_favourites"
         android:name="de.hdm.weatherapp.fragments.FavouritesFragment"
-        android:label="@string/favourites_label"
+        android:label="@string/favourite_title"
         tools:layout="@layout/fragment_favorites">
         <action
             android:id="@+id/action_navigation_favourites_to_navigation_search_result"
@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/navigation_search"
         android:name="de.hdm.weatherapp.fragments.SearchFragment"
-        android:label="@string/search_label"
+        android:label="@string/search_title"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_navigation_search_to_navigation_search_result"

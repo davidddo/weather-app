@@ -1,38 +1,19 @@
 <resources>
-    <string name="app_name">Weather App</string>
+    <string name="app_name">Wetter App</string>
 
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">Hello Square World!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="current_position_title">Aktuelle Position</string>
+    <string name="favourite_title">Favoriten</string>
+    <string name="search_title">Suche</string>
 
-    <string name="title_activity_main2">MainActivity2</string>
-    <string name="title_activity_main3">MainActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-
-    <string name="home_label">Home</string>
-    <string name="favourites_label">Favourites</string>
-    <string name="search_label">Search</string>
-
-    <!-- Strings used of the weather details -->
     <string name="title">%1$s, %2$s</string>
     <string name="subtitle">%1$s Uhr, %2$s</string>
     <string name="slider_label">%1$s Uhr</string>
     <string name="temperature">%1$s°</string>
     <string name="feels_like">Gefühlte %1$s°</string>
     <string name="wind_speed">%1$s km/h Wind</string>
+    <string name="visibility">%1$s km/h Wind</string>
+    <string name="sunrise">Sonnenaufgang um %1$s Uhr</string>
+    <string name="sunset">Sonnenuntergang um %1$s Uhr</string>
     <string name="humidity">%1$s Luftfeuchtigkeit</string>
-    <string name="search_title">Stadt suchen</string>
     <string name="min_max_divider">/</string>
-
 </resources>

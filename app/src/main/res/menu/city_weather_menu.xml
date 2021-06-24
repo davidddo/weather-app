@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_favourite"
         android:icon="@drawable/ic_favorite_border_24dp"
-        android:title="TODO"
+        android:title="Favorite"
         app:showAsAction="ifRoom" />
 </menu>

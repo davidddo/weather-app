@@ -35,9 +35,11 @@ public class WeatherView extends FrameLayout {
     private final TextView subtitleView;
     private final TextView temperatureView;
 
+    private final Slider timeSlider;
     private final Chip feelsLikeChip;
     private final Chip windSpeedChip;
-    private final Slider timeSlider;
+    private final Chip sunriseChip;
+    private final Chip sunsetChip;
 
     private final WeatherIconView weatherIconView;
     private final WeekForecastView weekForecastView;
@@ -67,8 +69,11 @@ public class WeatherView extends FrameLayout {
         subtitleView = findViewById(R.id.subtitle);
 
         timeSlider = findViewById(R.id.time_slider);
+
         feelsLikeChip = findViewById(R.id.feels_like);
         windSpeedChip = findViewById(R.id.wind_speed);
+        sunriseChip = findViewById(R.id.sunrise);
+        sunsetChip = findViewById(R.id.sunset);
 
         weatherIconView = findViewById(R.id.weather_icon);
         temperatureView = findViewById(R.id.temperature);
@@ -140,7 +145,7 @@ public class WeatherView extends FrameLayout {
         updateTitle(response.name, response.sys.country);
         updateSubtitle(weather.description, response.dt);
         updateTemperature(response.main.temp);
-        updateWeatherDetails(response.main.feelsLike, response.wind.speed);
+        updateWeatherChips(response);
         updateWeatherIcon(weather.id);
 
         weatherContainer.setVisibility(View.VISIBLE);
@@ -152,7 +157,7 @@ public class WeatherView extends FrameLayout {
         updateSubtitle(weather.description, response.dateTime);
         updateWeatherIcon(weather.id);
         updateTemperature(response.temp);
-        updateWeatherDetails(response.feelsLike, response.windSpeed);
+        updateWeatherChips(response);
     }
 
     private void updateTitle(String city, String country) {
@@ -172,7 +177,21 @@ public class WeatherView extends FrameLayout {
         this.temperatureView.setText(resources.getString(R.string.temperature, String.valueOf(temperature)));
     }
 
-    private void updateWeatherDetails(double feelsLike, double windSpeed) {
+    private void updateWeatherChips(CurrentWeatherResponse response) {
+        final String sunrise = formatTime(response.sys.sunrise, "HH:mm");
+        final String sunset =  formatTime(response.sys.sunset, "HH:mm");
+
+        this.sunriseChip.setText(resources.getString(R.string.sunrise, sunrise));
+        this.sunsetChip.setText(resources.getString(R.string.sunset, sunset));
+
+        updateWeatherChips(response.wind.speed, response.main.feelsLike);
+    }
+
+    private void updateWeatherChips(HourlyWeather response) {
+        updateWeatherChips(response.windSpeed, response.feelsLike);
+    }
+
+    private void updateWeatherChips(double windSpeed, double feelsLike) {
         this.feelsLikeChip.setText(resources.getString(R.string.feels_like, String.valueOf(feelsLike)));
         this.windSpeedChip.setText(resources.getString(R.string.wind_speed, String.valueOf(windSpeed)));
     }

@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import de.hdm.weatherapp.R;
 
@@ -42,14 +41,14 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-   @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         model = new ViewModelProvider(requireActivity()).get(SharedLocationViewModel.class);
         model.getLocation().observe(this, location -> weatherView.bindLocation(location));
 
-       checkPermissions();
+        checkPermissions();
     }
 
     @Override
