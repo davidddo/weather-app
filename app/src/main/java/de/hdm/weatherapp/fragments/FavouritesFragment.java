@@ -82,9 +82,7 @@ public class FavouritesFragment extends Fragment {
                 if (cache != null && cacheRepository.checkIfCacheIsValid(cache)) {
                     holder.bind(city, cache.currentWeather);
                 } else {
-                    AppExecutors.getInstance().networkIO().execute(
-                            () -> ApiClient.getClient().loadCurrentWeather(city.coord.lat, city.coord.lon,
-                                    response -> holder.bind(city, response)));
+                    ApiClient.getClient().loadCurrentWeather(city.coord.lat, city.coord.lon, response -> holder.bind(city, response));
                 }
 
                 holder.view.setOnClickListener(view -> {
