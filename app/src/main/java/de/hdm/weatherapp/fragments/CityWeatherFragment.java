@@ -14,8 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.database.entity.CityEntity;
 import de.hdm.weatherapp.interfaces.Location;

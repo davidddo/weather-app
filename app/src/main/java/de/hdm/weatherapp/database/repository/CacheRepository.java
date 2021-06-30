@@ -67,7 +67,6 @@ public class CacheRepository {
                 || cache.weekForecast == null
                 || timestamp < tenAgo) {
             this.cacheDao.delete(cache);
-            System.out.println("Delete");
             return false;
         }
 

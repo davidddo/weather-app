@@ -62,7 +62,6 @@ public class FavouritesFragment extends Fragment {
 
         public void submitList(List<CityEntity> favourites) {
             this.favourites = favourites;
-            System.out.println(this.favourites.size());
             notifyDataSetChanged();
         }
 
