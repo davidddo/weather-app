@@ -32,8 +32,12 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase database;
 
     public static synchronized AppDatabase getInstance(Context context) {
+        return getInstance(context, DATABASE_NAME);
+    }
+
+    public static synchronized AppDatabase getInstance(Context context, String name) {
         if (database == null) {
-            database = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
+            database = Room.databaseBuilder(context, AppDatabase.class, name)
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();

@@ -1,5 +1,7 @@
 package de.hdm.weatherapp;
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -15,10 +17,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static de.hdm.weatherapp.Helper.textViewHasValue;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class HomeTestWithoutLocation {
     @Rule
-    public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> activityTestRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Test
     public void homeTestWithoutLocation(){

@@ -6,6 +6,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -25,11 +28,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static de.hdm.weatherapp.Helper.textViewHasValue;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class HomeTest {
+    LocationManager locationManager;
 
     @Rule
-    public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> activityTestRule = new  ActivityScenarioRule<>(MainActivity.class);
 
     @Rule
     public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(
@@ -39,7 +43,8 @@ public class HomeTest {
 
     @Before
     public void init() {
-        LocationManager locationManager = (LocationManager) activityTestRule.getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        activityTestRule.getScenario().onActivity(activity -> { locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);});
         String provider = locationManager.getBestProvider(new Criteria(), false);
 
         locationManager.addTestProvider(provider,
@@ -73,13 +78,12 @@ public class HomeTest {
 
     @Test
     public void homeTest() {
-        onView(withId(R.id.navigation_home)).perform(click());
-
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        onView(withId(R.id.navigation_home)).perform(click());
 
         onView(withId(R.id.title)).check(matches(withText("New Germany, CA")));
         onView(withId(R.id.temperature)).check(matches(textViewHasValue()));

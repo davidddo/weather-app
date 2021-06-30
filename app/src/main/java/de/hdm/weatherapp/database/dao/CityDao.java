@@ -13,6 +13,9 @@ import de.hdm.weatherapp.database.entity.CityEntity;
 
 @Dao
 public interface CityDao {
+    @Query("SELECT * FROM cities")
+    List<CityEntity> getAll();
+
     @Query("SELECT * FROM cities WHERE saved = 1")
     LiveData<List<CityEntity>> getAllFavourites();
 

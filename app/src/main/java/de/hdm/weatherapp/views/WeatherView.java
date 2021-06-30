@@ -151,7 +151,6 @@ public class WeatherView extends FrameLayout {
         int today = calendar.get(Calendar.DAY_OF_WEEK);
         calendar.setTimeInMillis(dateTime*1000);
         int forecastDay = calendar.get(Calendar.DAY_OF_WEEK);
-        Log.e("SA",forecastDay +","+today);
         if(forecastDay == today) slider_label = "Heute " + slider_label;
         if(forecastDay == today + 1) slider_label = "Morgen " + slider_label;
         if(forecastDay == today + 2) slider_label = "Übermorgen " + slider_label;

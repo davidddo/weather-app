@@ -1,5 +1,7 @@
 package de.hdm.weatherapp;
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -21,11 +23,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class FavouriteTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> activityTestRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Rule
     public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(
@@ -34,7 +36,7 @@ public class FavouriteTest {
 
     @Before
     public void init() {
-        AppDatabase.getInstance(activityTestRule.getActivity()).cityDao().reset();
+        activityTestRule.getScenario().onActivity(activity -> {AppDatabase.getInstance(activity).cityDao().reset();});
     }
 
     @Test
