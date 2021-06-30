@@ -9,8 +9,7 @@
         android:id="@+id/max_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="120dp"
-        android:textColor="@color/black" />
+        android:maxWidth="120dp" />
 
     <TextView
         android:layout_width="wrap_content"

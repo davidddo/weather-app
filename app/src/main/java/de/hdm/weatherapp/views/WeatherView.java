@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -11,6 +12,11 @@ import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.slider.Slider;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 import de.hdm.weatherapp.R;
 import de.hdm.weatherapp.database.entity.CacheEntity;
@@ -134,9 +140,22 @@ public class WeatherView extends FrameLayout {
     private void initTimeSlider(DayForecastResponse response) {
         timeSlider.setLabelFormatter(value -> {
             final long dateTime = response.hourly.get((int) value).dateTime;
-            return resources.getString(R.string.slider_label, formatTime(dateTime, "HH:mm"));
+            return resources.getString(R.string.slider_label, formatSliderLabel(dateTime) );
         });
         timeSlider.addOnChangeListener((slider, value, fromUser) -> updateWeatherView(response.hourly.get((int) value)));
+    }
+
+    private String formatSliderLabel(long dateTime){
+        String slider_label = formatTime(dateTime, "HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.setTimeInMillis(dateTime*1000);
+        int forecastDay = calendar.get(Calendar.DAY_OF_WEEK);
+        Log.e("SA",forecastDay +","+today);
+        if(forecastDay == today) slider_label = "Heute " + slider_label;
+        if(forecastDay == today + 1) slider_label = "Morgen " + slider_label;
+        if(forecastDay == today + 2) slider_label = "Übermorgen " + slider_label;
+        return slider_label;
     }
 
     private void updateWeatherView(CurrentWeatherResponse response) {

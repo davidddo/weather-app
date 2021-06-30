@@ -15,8 +15,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:textAppearance="?attr/textAppearanceHeadline4"
-        android:textColor="@color/black" />
+        android:textAppearance="?attr/textAppearanceHeadline4" />
 
     <LinearLayout
         android:id="@+id/current_weather_container"
@@ -45,7 +44,6 @@
                 android:layout_height="120dp"
                 android:layout_weight="1"
                 android:textAppearance="?attr/textAppearanceHeadline4"
-                android:textColor="@color/black"
                 android:textSize="80sp" />
 
             <de.hdm.weatherapp.views.WeatherIconView
