@@ -60,9 +60,11 @@ public class CityWeatherFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
         if (item.getItemId() == R.id.action_favourite) {
-            final CityEntity city = Objects.requireNonNull(model.city.getValue());
-            model.updateBookmark(!city.saved);
-            updateFavouriteIcon(!city.saved);
+            final CityEntity city = model.city.getValue();
+            if (city != null) {
+                model.updateBookmark(!city.saved);
+                updateFavouriteIcon(!city.saved);
+            }
 
             return true;
         }
