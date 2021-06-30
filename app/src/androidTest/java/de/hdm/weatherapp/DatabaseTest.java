@@ -3,10 +3,10 @@ package de.hdm.weatherapp;
 import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,39 +20,36 @@ import de.hdm.weatherapp.database.dao.CityDao;
 import de.hdm.weatherapp.database.entity.CityEntity;
 import de.hdm.weatherapp.interfaces.common.Coord;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class DatabaseTest {
 
-    private AppDatabase database;
-    private CityDao cityDao;
+    private static AppDatabase database;
+    private static CityDao cityDao;
 
-    @Before
-    public void before() {
+    @BeforeClass
+    public static void before() {
         final Context context = ApplicationProvider.getApplicationContext();
         database = AppDatabase.getInstance(context, "weather_app_test");
         cityDao = database.cityDao();
     }
 
-    @After
-    public void after() {
+    @AfterClass
+    public static void after() throws InterruptedException {
         database.clearAllTables();
+        Thread.sleep(3000);
         database.close();
     }
 
     @Test
     public void writeAndReadCity() {
-        final Coord coord = new Coord();
-        coord.lat = 37.666668;
-        coord.lon = 55.683334;
-
-        final CityEntity city = new CityEntity(519188, "Novinki", "RU", coord);
+        final CityEntity city = new CityEntity(519188, "Novinki", "RU", new Coord(37.666668, 55.683334));
         cityDao.insertMany(Collections.singletonList(city));
 
         final List<CityEntity> cities = cityDao.getAll();
         assertNotNull(cities);
         assertNotEquals(0, cities.size());
 
-        final CityEntity queriedCity = cityDao.getById(519188).getValue();
+        final CityEntity queriedCity = cityDao.getByName("Novinki");
         assertNotNull(queriedCity);
         assertEquals(queriedCity.name, "Novinki");
         assertEquals(queriedCity.country, "RU");
@@ -60,12 +57,14 @@ public class DatabaseTest {
     }
 
     @Test
-    public void saveAndReadFavourites() {
+    public void saveAndReadFavourites() throws InterruptedException {
         cityDao.update(519188, true);
 
-        final List<CityEntity> cities = cityDao.getAllFavourites().getValue();
+        Thread.sleep(1000);
+
+        final List<CityEntity> cities = cityDao.getAllSaved();
         assertNotNull(cities);
-        assertEquals(cities.size(), 1);
+        assertEquals(1, cities.size());
         assertTrue(cities.get(0).saved);
     }
 }

@@ -8,4 +8,9 @@ public class Coord {
 
     @SerializedName("lat")
     public double lat;
+
+    public Coord(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
 }

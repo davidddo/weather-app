@@ -19,11 +19,17 @@ public interface CityDao {
     @Query("SELECT * FROM cities WHERE saved = 1")
     LiveData<List<CityEntity>> getAllFavourites();
 
+    @Query("SELECT * FROM cities WHERE saved = 1")
+    List<CityEntity> getAllSaved();
+
     @Query("SELECT * FROM cities LIMIT 1")
     CityEntity getAny();
 
     @Query("SELECT * FROM cities WHERE id = :id")
     LiveData<CityEntity> getById(int id);
+
+    @Query("SELECT * FROM cities WHERE name = :name")
+    CityEntity getByName(String name);
 
     @Query("SELECT * FROM cities WHERE name LIKE '%' || :query || '%'")
     PagingSource<Integer, CityEntity> pagingSource(String query);
